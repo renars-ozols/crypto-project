@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{% block title %}Crypto{% endblock %}
+{% block content %}
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">24h %</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, coin in coins %}
+                <tr>
+                    <th scope="row">{{ key+1 }}</th>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ coin.logo }}" alt="logo {{ coin.id }}" class="rounded-circle me-3" width="40px">
+                            <h5 class="m-0">{{ coin.name }} <span class="badge bg-secondary">{{ coin.symbol }}</span></h5>
+                        </div>
+                    </td>
+                    <td><span>${{ coin.price|number_format(2) }}</span></td>
+                    <td>
+                    <span>
+                    {% if coin.percentChange24h >= 0 %}
+                        <i class="icon-chevron-up text-success"></i>
+                    {% else %}
+                        <i class="icon-chevron-down text-danger"></i>
+                    {% endif %}
+                        {{ coin.percentChange24h|number_format(2) }}
+                </span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
