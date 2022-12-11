@@ -8,13 +8,15 @@ class User
     private string $name;
     private string $email;
     private string $password;
+    private float $money;
 
-    public function __construct(string $id, string $name, string $email, string $password)
+    public function __construct(string $id, string $name, string $email, string $password, float $money = 0)
     {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
+        $this->money = $money;
     }
 
     public function getId(): string
@@ -35,5 +37,10 @@ class User
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getMoney(): float
+    {
+        return $this->money;
     }
 }

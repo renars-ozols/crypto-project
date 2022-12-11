@@ -19,7 +19,7 @@ class AuthViewVariables implements ViewVariables
 
         $queryBuilder = Database::getConnection()->createQueryBuilder();
         $user = $queryBuilder
-            ->select('name, email')
+            ->select('name, email, money')
             ->from('users')
             ->where('id = ?')
             ->setParameter(0, $_SESSION['auth_id'])
@@ -27,7 +27,8 @@ class AuthViewVariables implements ViewVariables
 
         return [
             'name' => $user['name'],
-            'email' => $user['email']
+            'email' => $user['email'],
+            'money' => $user['money']
         ];
     }
 }

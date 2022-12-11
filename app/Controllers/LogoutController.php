@@ -9,6 +9,6 @@ class LogoutController
     public function logout(): Redirect
     {
         unset($_SESSION['auth_id']);
-        return new Redirect('/');
+        return new Redirect('/login');
     }
 }

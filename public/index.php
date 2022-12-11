@@ -6,6 +6,7 @@ use App\Controllers\CryptoController;
 use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
 use App\Controllers\RegisterController;
+use App\Controllers\UserDashboardController;
 use App\Redirect;
 use App\Template;
 use App\ViewVariables\AuthViewVariables;
@@ -37,11 +38,18 @@ foreach ($viewVariables as $variable) {
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $route) {
     $route->addRoute('GET', '/', [CryptoController::class, 'index']);
+    $route->addRoute('GET', '/coin/{id:\d+}', [CryptoController::class, 'show']);
+    $route->addRoute('GET', '/search', [CryptoController::class, 'search']);
     $route->addRoute('GET', '/register', [RegisterController::class, 'showForm']);
     $route->addRoute('POST', '/register', [RegisterController::class, 'store']);
     $route->addRoute('GET', '/login', [LoginController::class, 'showForm']);
     $route->addRoute('POST', '/login', [LoginController::class, 'login']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
+    $route->addRoute('GET', '/dashboard', [UserDashboardController::class, 'index']);
+    $route->addRoute('POST', '/dashboard/deposit', [UserDashboardController::class, 'depositMoney']);
+    $route->addRoute('POST', '/dashboard/withdraw', [UserDashboardController::class, 'withdrawMoney']);
+    $route->addRoute('POST', '/coin/buy', [UserDashboardController::class, 'buyCrypto']);
+    $route->addRoute('POST', '/coin/sell', [UserDashboardController::class, 'sellCrypto']);
 });
 
 // Fetch method and URI from somewhere
@@ -69,7 +77,7 @@ switch ($routeInfo[0]) {
 
         [$controller, $method] = $handler;
 
-        $response = (new $controller)->{$method}();
+        $response = (new $controller)->{$method}($vars);
 
         if ($response instanceof Template) {
             echo $twig->render($response->getPath(), $response->getParams());
