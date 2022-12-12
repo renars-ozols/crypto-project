@@ -2,9 +2,9 @@
 
 namespace App\Models\Collections;
 
-use App\Models\Coin;
+use App\Models\Crypto;
 
-class CoinCollection
+class CryptoCollection
 {
     private array $coins;
 
@@ -15,7 +15,7 @@ class CoinCollection
         }
     }
 
-    public function add(Coin $coin): void
+    public function add(Crypto $coin): void
     {
         $this->coins[] = $coin;
     }

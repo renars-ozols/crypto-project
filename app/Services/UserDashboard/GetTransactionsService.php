@@ -3,20 +3,19 @@
 namespace App\Services\UserDashboard;
 
 use App\Models\Collections\TransactionCollection;
-use App\Repositories\UserDashboard\MySQLUserDashboardRepository;
 use App\Repositories\UserDashboard\UserDashboardRepository;
 
 class GetTransactionsService
 {
-    private UserDashboardRepository $userDashboardRepository;
+    private UserDashboardRepository $repository;
 
-    public function __construct()
+    public function __construct(UserDashboardRepository $repository)
     {
-        $this->userDashboardRepository = new MySQLUserDashboardRepository();
+        $this->repository = $repository;
     }
 
     public function execute(string $userId): ?TransactionCollection
     {
-        return $this->userDashboardRepository->getTransactions($userId);
+        return $this->repository->getTransactions($userId);
     }
 }

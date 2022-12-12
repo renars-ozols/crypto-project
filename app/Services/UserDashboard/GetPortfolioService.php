@@ -3,20 +3,19 @@
 namespace App\Services\UserDashboard;
 
 use App\Models\Collections\PortfolioCollection;
-use App\Repositories\UserDashboard\MySQLUserDashboardRepository;
 use App\Repositories\UserDashboard\UserDashboardRepository;
 
 class GetPortfolioService
 {
-    private UserDashboardRepository $userDashboardRepository;
+    private UserDashboardRepository $repository;
 
-    public function __construct()
+    public function __construct(UserDashboardRepository $repository)
     {
-        $this->userDashboardRepository = new MySQLUserDashboardRepository();
+        $this->repository = $repository;
     }
 
     public function execute(string $userId): ?PortfolioCollection
     {
-        return $this->userDashboardRepository->getPortfolio($userId);
+        return $this->repository->getPortfolio($userId);
     }
 }

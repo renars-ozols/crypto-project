@@ -25,4 +25,9 @@ class Validation extends Rules
 
         return $user ?: null;
     }
+
+    public function validateBuyCryptoForm (string $coinPrice, string $amount, string $userId): void
+    {
+     var_dump($_POST);die;
+    }
 }

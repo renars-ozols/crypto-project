@@ -2,9 +2,11 @@
 
 session_start();
 
+use App\Controllers\BuySellCryptoController;
 use App\Controllers\CryptoController;
 use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
+use App\Controllers\MoneyController;
 use App\Controllers\RegisterController;
 use App\Controllers\UserDashboardController;
 use App\Redirect;
@@ -23,6 +25,28 @@ $dotenv->load();
 
 $loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
+
+$container = new DI\Container();
+$container->set(
+    \App\Repositories\Crypto\CryptoRepository::class,
+    \DI\create(\App\Repositories\Crypto\CoinMarketCapApiCryptoRepository::class)
+);
+$container->set(
+    \App\Repositories\Users\UserRepository::class,
+    \DI\create(\App\Repositories\Users\MySqlUserRepository::class)
+);
+$container->set(
+    \App\Repositories\Money\MoneyRepository::class,
+    \DI\create(\App\Repositories\Money\MySqlMoneyRepository::class)
+);
+$container->set(
+    \App\Repositories\BuySellCrypto\BuySellCryptoRepository::class,
+    \DI\create(\App\Repositories\BuySellCrypto\MySqlBuySellCryptoRepository::class)
+);
+$container->set(
+    \App\Repositories\UserDashboard\UserDashboardRepository::class,
+    \DI\create(\App\Repositories\UserDashboard\MySqlUserDashboardRepository::class)
+);
 
 //TODO: Can implement auto read from directory
 $viewVariables = [
@@ -46,10 +70,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('POST', '/login', [LoginController::class, 'login']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
     $route->addRoute('GET', '/dashboard', [UserDashboardController::class, 'index']);
-    $route->addRoute('POST', '/dashboard/deposit', [UserDashboardController::class, 'depositMoney']);
-    $route->addRoute('POST', '/dashboard/withdraw', [UserDashboardController::class, 'withdrawMoney']);
-    $route->addRoute('POST', '/coin/buy', [UserDashboardController::class, 'buyCrypto']);
-    $route->addRoute('POST', '/coin/sell', [UserDashboardController::class, 'sellCrypto']);
+    $route->addRoute('POST', '/deposit', [MoneyController::class, 'deposit']);
+    $route->addRoute('POST', '/withdraw', [MoneyController::class, 'withdraw']);
+    $route->addRoute('POST', '/coin/buy', [BuySellCryptoController::class, 'buyCrypto']);
+    $route->addRoute('POST', '/coin/sell', [BuySellCryptoController::class, 'sellCrypto']);
 });
 
 // Fetch method and URI from somewhere
@@ -77,7 +101,7 @@ switch ($routeInfo[0]) {
 
         [$controller, $method] = $handler;
 
-        $response = (new $controller)->{$method}($vars);
+        $response = $container->get($controller)->{$method}($vars);
 
         if ($response instanceof Template) {
             echo $twig->render($response->getPath(), $response->getParams());

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace App\Repositories\Coins;
+namespace App\Repositories\Crypto;
 
-use App\Models\Coin;
-use App\Models\Collections\CoinCollection;
+use App\Models\Crypto;
+use App\Models\Collections\CryptoCollection;
 use GuzzleHttp\Client;
 
-class CoinMarketCapApiCoinRepository implements CoinRepository
+class CoinMarketCapApiCryptoRepository implements CryptoRepository
 {
     private Client $client;
 
@@ -20,7 +20,7 @@ class CoinMarketCapApiCoinRepository implements CoinRepository
         ]);
     }
 
-    public function getCoins(int $limit): CoinCollection
+    public function getCoins(int $limit): CryptoCollection
     {
         $response = $this->client->request('GET', 'v1/cryptocurrency/listings/latest', [
             'query' => ['limit' => $limit]
@@ -40,11 +40,11 @@ class CoinMarketCapApiCoinRepository implements CoinRepository
         $logos = json_decode($response->getBody()->getContents(), true);
         $logos = $logos['data'];
 
-        $coinCollection = new CoinCollection();
+        $coinCollection = new CryptoCollection();
 
         foreach ($coins['data'] as $coin) {
             $coinCollection->add(
-                new Coin(
+                new Crypto(
                     $coin['id'],
                     $coin['name'],
                     $coin['symbol'],
@@ -59,7 +59,7 @@ class CoinMarketCapApiCoinRepository implements CoinRepository
         return $coinCollection;
     }
 
-    public function getCoin(string $id): Coin
+    public function getCoin(string $id): Crypto
     {
         $response = $this->client->request('GET', 'v2/cryptocurrency/quotes/latest', [
             'query' => ['id' => $id]
@@ -73,7 +73,7 @@ class CoinMarketCapApiCoinRepository implements CoinRepository
 
         $logo = json_decode($response->getBody()->getContents(), true);
 
-        return new Coin(
+        return new Crypto(
             $coin['data'][$id]['id'],
             $coin['data'][$id]['name'],
             $coin['data'][$id]['symbol'],

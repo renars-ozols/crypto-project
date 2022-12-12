@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Coin
+class Crypto
 {
     private int $id;
     private string $name;

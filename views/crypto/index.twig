@@ -22,47 +22,47 @@
             </tr>
             </thead>
             <tbody>
-            {% for key, coin in coins %}
+            {% for key, crypto in cryptos %}
                 <tr>
                     <th scope="row">{{ key+1 }}</th>
                     <td>
                         <div class="d-flex align-items-center">
-                            <img src="{{ coin.logo }}" alt="logo {{ coin.id }}" class="rounded-circle me-3" width="40px">
-                            <h5 class="m-0">{{ coin.name }} <span class="badge bg-secondary">{{ coin.symbol }}</span></h5>
+                            <img src="{{ crypto.logo }}" alt="logo {{ crypto.id }}" class="rounded-circle me-3" width="40px">
+                            <h5 class="m-0">{{ crypto.name }} <span class="badge bg-secondary">{{ crypto.symbol }}</span></h5>
                         </div>
                     </td>
-                    <td class="align-middle"><span>${{ coin.price|number_format(2) }}</span></td>
+                    <td class="align-middle"><span>${{ crypto.price|number_format(2) }}</span></td>
                     <td class="align-middle">
-                        <span class="{{ coin.percentChange1h >=0 ? 'text-success' : 'text-danger' }}">
-                        {% if coin.percentChange1h >= 0 %}
+                        <span class="{{ crypto.percentChange1h >=0 ? 'text-success' : 'text-danger' }}">
+                        {% if crypto.percentChange1h >= 0 %}
                             <i class="icon-chevron-up"></i>
                         {% else %}
                             <i class="icon-chevron-down"></i>
                         {% endif %}
-                            {{ coin.percentChange1h|number_format(2) }}%
+                            {{ crypto.percentChange1h|number_format(2) }}%
                         </span>
                     </td>
                     <td class="align-middle">
-                        <span class="{{ coin.percentChange24h >=0 ? 'text-success' : 'text-danger' }}">
-                        {% if coin.percentChange24h >= 0 %}
+                        <span class="{{ crypto.percentChange24h >=0 ? 'text-success' : 'text-danger' }}">
+                        {% if crypto.percentChange24h >= 0 %}
                             <i class="icon-chevron-up"></i>
                         {% else %}
                             <i class="icon-chevron-down"></i>
                         {% endif %}
-                            {{ coin.percentChange24h|number_format(2) }}%
+                            {{ crypto.percentChange24h|number_format(2) }}%
                         </span>
                     </td>
                     <td class="align-middle">
-                        <span class="{{ coin.percentChange7d >=0 ? 'text-success' : 'text-danger' }}">
-                        {% if coin.percentChange7d >= 0 %}
+                        <span class="{{ crypto.percentChange7d >=0 ? 'text-success' : 'text-danger' }}">
+                        {% if crypto.percentChange7d >= 0 %}
                             <i class="icon-chevron-up"></i>
                         {% else %}
                             <i class="icon-chevron-down"></i>
                         {% endif %}
-                            {{ coin.percentChange7d|number_format(2) }}%
+                            {{ crypto.percentChange7d|number_format(2) }}%
                         </span>
                     </td>
-                    <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ coin.id }}">Trade</a></td>
+                    <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ crypto.id }}">Trade</a></td>
                 </tr>
             {% endfor %}
             </tbody>

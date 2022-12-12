@@ -7,7 +7,7 @@
             <h2>Balance: ${{ auth.money|number_format(2) }}</h2>
             <div class="d-flex justify-content-center">
                 <div class="me-2">
-                    <form action="/dashboard/deposit" method="post">
+                    <form action="/deposit" method="post">
                         <div class="text-center">
                             <label for="deposit" class="col-form-label">Amount</label>
                             <input type="number" id="deposit" name="amount" class="form-control" aria-describedby="buy">
@@ -18,7 +18,7 @@
                     </form>
                 </div>
                 <div class="me-2">
-                    <form action="/dashboard/withdraw" method="post">
+                    <form action="/withdraw" method="post">
                         <div class="text-center">
                             <label for="withdraw" class="col-form-label">Amount</label>
                             <input type="number" id="withdraw" name="amount" class="form-control" aria-describedby="buy">

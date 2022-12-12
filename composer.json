@@ -11,6 +11,7 @@
     "doctrine/dbal": "^3.5",
     "respect/validation": "^2.2",
     "guzzlehttp/guzzle": "^7.5",
-    "ext-json": "*"
+    "ext-json": "*",
+    "php-di/php-di": "^6.4"
   }
 }
