@@ -39,7 +39,7 @@ class User
         return $this->password;
     }
 
-    public function getMoney(): float
+    public function getBalance(): float
     {
         return $this->money;
     }

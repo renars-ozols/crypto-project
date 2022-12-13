@@ -47,7 +47,8 @@ class Authentication
             $user['id'],
             $user['name'],
             $user['email'],
-            $user['password']
+            $user['password'],
+            (float)$user['money']
         );
     }
 }

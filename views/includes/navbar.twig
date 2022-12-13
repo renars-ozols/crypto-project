@@ -5,7 +5,11 @@
             {% if auth.name %}
                 <a class="nav-item nav-link" href="/dashboard">Dashboard</a>
                 <a class="nav-item nav-link" href="/logout">Logout</a>
-                <span class="badge text-bg-info fs-5 my-auto ms-3">{{ auth.name }}</span>
+                <div class="badge text-bg-info fs-5 my-auto ms-3">
+                    <span class="me-3">{{ auth.name }}</span>
+                    <i class="icon-money"></i>
+                    <span class="ms-1">${{ auth.money|number_format(2) }}</span>
+                </div>
             {% else %}
                 <a class="nav-item nav-link" href="/register">Registration</a>
                 <a class="nav-item nav-link" href="/login">Login</a>

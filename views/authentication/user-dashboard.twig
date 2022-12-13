@@ -21,11 +21,16 @@
                     <form action="/withdraw" method="post">
                         <div class="text-center">
                             <label for="withdraw" class="col-form-label">Amount</label>
-                            <input type="number" id="withdraw" name="amount" class="form-control" aria-describedby="buy">
+                            <input type="number" id="withdraw" name="amount" class="form-control {{ errors.amount ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-outline-secondary" type="submit">Withdraw</button>
                         </div>
+                        {% if errors.amount %}
+                            <div class="text-danger">
+                                {{ errors.amount }}
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
@@ -39,6 +44,8 @@
                     <th scope="col">Name</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Current value</th>
+                    <th scope="col">Average price</th>
+                    <th scope="col">Current price</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -53,7 +60,21 @@
                             </div>
                         </td>
                         <td class="align-middle"><span>{{ entry.amount|number_format(2) }}</span></td>
-                        <td class="align-middle"><span>need to implement</span></td>
+                        <td class="align-middle"><span>~${{ (entry.currentPrice * entry.amount)|number_format(2) }}</span></td>
+                        <td class="align-middle"><span>${{ entry.averagePrice|number_format(2) }}</span></td>
+                        <td class="align-middle d-flex flex-column">
+                            {% set change = (entry.currentPrice - entry.averagePrice) %}
+                            <span>${{ entry.currentPrice|number_format(2) }}</span>
+                            <span>
+                                {% if change > 0 %}
+                                    <span class="text-success">+{{ change|number_format(2) }}</span>
+                                {% elseif change < 0 %}
+                                    <span class="text-danger">{{ change|number_format(2) }}</span>
+                                {% else %}
+                                    <span>{{ change|number_format(2) }}</span>
+                                {% endif %}
+                            </span>
+                        </td>
                         <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ entry.coinId }}">Trade</a></td>
                     </tr>
                 {% endfor %}

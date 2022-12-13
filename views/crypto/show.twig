@@ -58,11 +58,16 @@
                         <input type="hidden" name="coin_price" value="{{ coin.price }}">
                         <div class="text-center">
                             <label for="buy" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="buy" class="form-control" aria-describedby="buy">
+                            <input type="number" step="any" name="amount" id="buy" class="form-control {{ errors.buyError ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-success" type="submit">Buy</button>
                         </div>
+                        {% if errors.buyError %}
+                            <div class="text-danger">
+                                {{ errors.buyError }}
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
                 <div class="ms-2 flex-grow-1">
@@ -73,11 +78,16 @@
                         <input type="hidden" name="coin_price" value="{{ coin.price }}">
                         <div class="text-center">
                             <label for="sell" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="sell" class="form-control" aria-describedby="buy">
+                            <input type="number" step="any" name="amount" id="sell" class="form-control {{ errors.sellError ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-danger" type="submit">Sell</button>
                         </div>
+                        {% if errors.sellError %}
+                            <div class="text-danger">
+                                {{ errors.sellError }}
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>

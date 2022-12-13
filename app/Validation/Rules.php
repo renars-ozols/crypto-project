@@ -95,6 +95,40 @@ class Rules
         return null;
     }
 
+    protected function validateMoneyWithdrawal(float $amount): void
+    {
+        $user = Authentication::getUser();
+        if ($amount > $user->getBalance()) {
+            $this->addError('amount', 'you do not have enough money!');
+        }
+    }
+
+    protected function validateBuyCrypto (string $coinPrice, string $amount): void
+    {
+        $user = Authentication::getUser();
+        $total = $coinPrice * $amount;
+        if ($total > $user->getBalance()) {
+            $this->addError('buyError', 'you do not have enough money!');
+        }
+    }
+
+    protected function validateSellCrypto (string $coinId, string $userId, string $amount): void
+    {
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $userCoin = $queryBuilder
+            ->select('*')
+            ->from('wallet')
+            ->where('user_id = ?')
+            ->andWhere('coin_id = ?')
+            ->setParameter(0, $userId)
+            ->setParameter(1, $coinId)
+            ->fetchAssociative();
+
+        if (!$userCoin || $amount > $userCoin['amount']) {
+            $this->addError('sellError', 'invalid request!');
+        }
+    }
+
     private function addError(string $name, string $message): void
     {
         $_SESSION['errors'][$name] = $message;

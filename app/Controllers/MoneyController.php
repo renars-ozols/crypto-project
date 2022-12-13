@@ -6,6 +6,7 @@ use App\Authentication;
 use App\Redirect;
 use App\Services\Money\DepositMoneyService;
 use App\Services\Money\WithdrawMoneyService;
+use App\Validation\Validation;
 
 class MoneyController
 {
@@ -28,6 +29,14 @@ class MoneyController
     public function withdraw(): Redirect
     {
         $amount = (float)$_POST['amount'];
+
+        $validation = new Validation();
+        $validation->validateMoneyWithdrawalForm($amount);
+
+        if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
+            return new Redirect('/dashboard');
+        }
+
         $this->withdrawMoneyService->execute($amount, Authentication::getAuthId());
         return new Redirect('/dashboard');
     }

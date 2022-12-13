@@ -26,8 +26,18 @@ class Validation extends Rules
         return $user ?: null;
     }
 
-    public function validateBuyCryptoForm (string $coinPrice, string $amount, string $userId): void
+    public function validateMoneyWithdrawalForm(float $amount): void
     {
-     var_dump($_POST);die;
+        $this->validateMoneyWithdrawal($amount);
+    }
+
+    public function validateBuyCryptoForm (string $coinPrice, string $amount): void
+    {
+        $this->validateBuyCrypto($coinPrice, $amount);
+    }
+
+    public function validateSellCryptoForm (string $coinId, string $userId, string $amount): void
+    {
+        $this->validateSellCrypto($coinId, $userId, $amount);
     }
 }
