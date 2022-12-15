@@ -22,6 +22,8 @@ class BuySellCryptoController
 
     public function buyCrypto(): Redirect
     {
+        //TODO: change price from coming from the form to coming from the database
+        //TODO: change that controller method calls only one service method
         $validation = new Validation();
         $validation->validateBuyCryptoForm($_POST['amount'], $_POST['coin_price']);
 
@@ -42,6 +44,9 @@ class BuySellCryptoController
 
     public function sellCrypto(): Redirect
     {
+        //TODO: change price from coming from the form to coming from the database
+        //TODO: change that controller method calls only one service method
+        //TODO: 1.22 || 2.03!!! || 2.24!!!
         $validation = new Validation();
         $validation->validateSellCryptoForm($_POST['coin_id'], Authentication::getAuthId(), $_POST['amount']);
 

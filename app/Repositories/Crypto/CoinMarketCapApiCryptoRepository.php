@@ -5,6 +5,7 @@ namespace App\Repositories\Crypto;
 use App\Models\Crypto;
 use App\Models\Collections\CryptoCollection;
 use GuzzleHttp\Client;
+use stdClass;
 
 class CoinMarketCapApiCryptoRepository implements CryptoRepository
 {
@@ -20,79 +21,63 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         ]);
     }
 
-    public function getCoins(int $limit): CryptoCollection
+    private function fetch(string $url, array $query): stdClass
     {
-        $response = $this->client->request('GET', 'v1/cryptocurrency/listings/latest', [
-            'query' => ['limit' => $limit]
+        $response = $this->client->request('GET', $url, [
+            'query' => $query
         ]);
 
-        $coins = json_decode($response->getBody()->getContents(), true);
+        return json_decode($response->getBody()->getContents());
+    }
+
+    private function buildModel(stdClass $coin): Crypto
+    {
+        return new Crypto(
+            $coin->id,
+            $coin->name,
+            $coin->symbol,
+            $coin->logo,
+            $coin->quote->USD->price,
+            $coin->quote->USD->percent_change_1h,
+            $coin->quote->USD->percent_change_24h,
+            $coin->quote->USD->percent_change_7d
+        );
+    }
+
+    public function getCoins(int $limit): CryptoCollection
+    {
+        $coins = $this->fetch('v1/cryptocurrency/listings/latest', ['limit' => $limit]);
 
         $queryIds = [];
 
-        foreach ($coins['data'] as $coin) {
-            $queryIds[] = $coin['id'];
+        foreach ($coins->data as $coin) {
+            $queryIds[] = $coin->id;
         }
 
-        $response = $this->client->request('GET', 'v2/cryptocurrency/info', [
-            'query' => ['id' => implode(',', $queryIds)]
-        ]);
-        $logos = json_decode($response->getBody()->getContents(), true);
-        $logos = $logos['data'];
+        $logos = $this->fetch('v2/cryptocurrency/info', ['id' => implode(',', $queryIds)]);
 
         $coinCollection = new CryptoCollection();
 
-        foreach ($coins['data'] as $coin) {
-            $coinCollection->add(
-                new Crypto(
-                    $coin['id'],
-                    $coin['name'],
-                    $coin['symbol'],
-                    array_values(array_filter($logos, fn($logo) => $logo['id'] == $coin['id']))[0]['logo'],
-                    $coin['quote']['USD']['price'],
-                    $coin['quote']['USD']['percent_change_1h'],
-                    $coin['quote']['USD']['percent_change_24h'],
-                    $coin['quote']['USD']['percent_change_7d']
-                )
-            );
+        foreach ($coins->data as $coin) {
+            $coin->logo = $logos->data->{$coin->id}->logo;
+            $coinCollection->add($this->buildModel($coin));
         }
         return $coinCollection;
     }
 
     public function getCoin(string $id): Crypto
     {
-        $response = $this->client->request('GET', 'v2/cryptocurrency/quotes/latest', [
-            'query' => ['id' => $id]
-        ]);
+        $coin = $this->fetch('v2/cryptocurrency/quotes/latest', ['id' => $id]);
+        $logo = $this->fetch('v2/cryptocurrency/info', ['id' => $id]);
+        $coin = $coin->data->{$id};
+        $coin->logo = $logo->data->{$coin->id}->logo;
 
-        $coin = json_decode($response->getBody()->getContents(), true);
-
-        $response = $this->client->request('GET', 'v2/cryptocurrency/info', [
-            'query' => ['id' => $id]
-        ]);
-
-        $logo = json_decode($response->getBody()->getContents(), true);
-
-        return new Crypto(
-            $coin['data'][$id]['id'],
-            $coin['data'][$id]['name'],
-            $coin['data'][$id]['symbol'],
-            array_values($logo['data'])[0]['logo'],
-            $coin['data'][$id]['quote']['USD']['price'],
-            $coin['data'][$id]['quote']['USD']['percent_change_1h'],
-            $coin['data'][$id]['quote']['USD']['percent_change_24h'],
-            $coin['data'][$id]['quote']['USD']['percent_change_7d']
-        );
+        return $this->buildModel($coin);
     }
 
     public function searchCoin(string $query): int
     {
-        $response = $this->client->request('GET', 'v1/cryptocurrency/map', [
-            'query' => ['symbol' => $query]
-        ]);
-
-        $coin = json_decode($response->getBody()->getContents(), true);
-
-        return $coin['data'][0]['id'];
+        $coin = $this->fetch('v1/cryptocurrency/map', ['symbol' => $query]);
+        return $coin->data[0]->id;
     }
 }
