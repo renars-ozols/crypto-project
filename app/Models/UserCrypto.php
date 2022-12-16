@@ -13,12 +13,12 @@ class UserCrypto
     private ?float $averagePrice;
     private ?float $currentPrice;
 
-    public function __construct(int $userId,
-                                int $coinId,
+    public function __construct(int    $userId,
+                                int    $coinId,
                                 string $coinName,
                                 string $coinLogo,
-                                float $amount,
-                                ?int $id = null,
+                                float  $amount,
+                                ?int   $id = null,
                                 ?float $averagePrice = null,
                                 ?float $currentPrice = null)
     {

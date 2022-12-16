@@ -32,12 +32,12 @@ class Validation extends Rules
         $this->validateMoneyWithdrawal($amount, $userId);
     }
 
-    public function validateBuyCryptoForm (BuyAndSellCryptoFormRequest $request): void
+    public function validateBuyCryptoForm(BuyAndSellCryptoFormRequest $request): void
     {
         $this->validateBuyCrypto($request);
     }
 
-    public function validateSellCryptoForm (BuyAndSellCryptoFormRequest $request): void
+    public function validateSellCryptoForm(BuyAndSellCryptoFormRequest $request): void
     {
         $this->validateSellCrypto($request);
     }

@@ -7,22 +7,22 @@ use App\Models\Collections\UserCryptoCollection;
 
 class IndexUserDashboardResponse
 {
-    private UserCryptoCollection $portfolio;
-    private TransactionCollection $transactions;
+    private ?TransactionCollection $transactions;
+    private ?UserCryptoCollection $portfolio;
 
-    public function __construct(UserCryptoCollection $portfolio, TransactionCollection $transactions)
+    public function __construct(?TransactionCollection $transactions = null, ?UserCryptoCollection $portfolio = null)
     {
-        $this->portfolio = $portfolio;
         $this->transactions = $transactions;
+        $this->portfolio = $portfolio;
     }
 
-    public function getPortfolio(): UserCryptoCollection
-    {
-        return $this->portfolio;
-    }
-
-    public function getTransactions(): TransactionCollection
+    public function getTransactions(): ?TransactionCollection
     {
         return $this->transactions;
+    }
+
+    public function getPortfolio(): ?UserCryptoCollection
+    {
+        return $this->portfolio;
     }
 }

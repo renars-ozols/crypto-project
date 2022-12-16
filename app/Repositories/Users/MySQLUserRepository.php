@@ -8,6 +8,17 @@ use App\Services\RegisterServiceRequest;
 
 class MySQLUserRepository implements UserRepository
 {
+    private function buildModel(array $user): User
+    {
+        return new User(
+            (int)$user['id'],
+            $user['name'],
+            $user['email'],
+            $user['password'],
+            (float)$user['money']
+        );
+    }
+
     public function add(RegisterServiceRequest $request): void
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
@@ -23,7 +34,7 @@ class MySQLUserRepository implements UserRepository
             ->executeQuery();
     }
 
-    public function getById(int $id): User
+    public function getById(int $id): ?User
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
         $user = $queryBuilder
@@ -33,13 +44,20 @@ class MySQLUserRepository implements UserRepository
             ->setParameter(0, $id)
             ->fetchAssociative();
 
-        return new User(
-            (int)$user['id'],
-            $user['name'],
-            $user['email'],
-            $user['password'],
-            (float)$user['money']
-        );
+        return $user ? $this->buildModel($user): null;
+    }
+
+    public function getByEmail(string $email): ?User
+    {
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $user = $queryBuilder
+            ->select('*')
+            ->from('users')
+            ->where('email = ?')
+            ->setParameter(0, $email)
+            ->fetchAssociative();
+
+        return $user ? $this->buildModel($user) : null;
     }
 
     public function save(User $user): void

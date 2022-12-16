@@ -19,8 +19,8 @@ class Transaction
                                 string          $coinName,
                                 float           $coinPrice,
                                 float           $amount,
-                                ?int             $id = null,
-                                ?string          $createdAt = null)
+                                ?int            $id = null,
+                                ?string         $createdAt = null)
     {
         $this->userId = $userId;
         $this->coinId = $coinId;

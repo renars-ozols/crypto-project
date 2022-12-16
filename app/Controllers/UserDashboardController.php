@@ -8,7 +8,6 @@ use App\Template;
 
 class UserDashboardController
 {
-
     private IndexUserDashboardService $indexUserDashboardService;
 
     public function __construct(IndexUserDashboardService $indexUserDashboardService)
@@ -20,8 +19,8 @@ class UserDashboardController
     {
         $data = $this->indexUserDashboardService->execute(Authentication::getAuthId());
         return new Template('/authentication/user-dashboard.twig',
-            ['portfolio' => $data->getPortfolio()->getPortfolio(),
-                'transactions' => $data->getTransactions()->getTransactions()
+            ['portfolio' => $data->getPortfolio() ? $data->getPortfolio()->getPortfolio() : [],
+                'transactions' => $data->getTransactions() ? $data->getTransactions()->getTransactions() : []
             ]);
     }
 }

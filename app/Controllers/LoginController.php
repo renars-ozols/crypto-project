@@ -10,6 +10,13 @@ use App\Validation\Validation;
 
 class LoginController
 {
+    private Validation $validation;
+
+    public function __construct(Validation $validation)
+    {
+        $this->validation = $validation;
+    }
+
     public function showForm(): Template
     {
         return new Template('/authentication/login.twig');
@@ -17,8 +24,7 @@ class LoginController
 
     public function login(): Redirect
     {
-        $validation = new Validation();
-        $user = $validation->validateLoginForm(new UserLoginFormRequest(
+        $user = $this->validation->validateLoginForm(new UserLoginFormRequest(
             $_POST['email'],
             $_POST['password']
         ));

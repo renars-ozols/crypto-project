@@ -8,6 +8,7 @@ use App\Models\Transaction;
 interface TransactionsRepository
 {
     public function getAll(int $userId): ?TransactionCollection;
+
 //    public function get(int $id): Transaction;
     public function create(Transaction $transaction): void;
 //    public function save(Transaction $transaction): void;

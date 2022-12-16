@@ -75,10 +75,11 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         return $this->buildModel($coin);
     }
 
-    public function searchCoin(string $query): int
+    public function searchCoin(string $query): ?int
     {
         $coin = $this->fetch('v1/cryptocurrency/map', ['symbol' => $query]);
-        return $coin->data[0]->id;
+
+        return $coin->data[0]->id ?? null;
     }
 
     public function getCurrentPrices(string $ids): stdClass

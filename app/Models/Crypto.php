@@ -13,14 +13,14 @@ class Crypto
     private float $percentChange1h;
     private float $percentChange7d;
 
-    public function __construct(int $id,
+    public function __construct(int    $id,
                                 string $name,
                                 string $symbol,
                                 string $logo,
-                                float $price,
-                                float $percentChange1h,
-                                float $percentChange24h,
-                                float $percentChange7d)
+                                float  $price,
+                                float  $percentChange1h,
+                                float  $percentChange24h,
+                                float  $percentChange7d)
     {
         $this->id = $id;
         $this->name = $name;

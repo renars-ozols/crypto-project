@@ -13,13 +13,12 @@ use Respect\Validation\Validator as validator;
 
 class Rules
 {
-    //TODO: 144
     private UserRepository $userRepository;
     private CryptoRepository $cryptoRepository;
     private UserCryptoRepository $userCryptoRepository;
 
-    public function __construct(UserRepository $userRepository,
-                                CryptoRepository $cryptoRepository,
+    public function __construct(UserRepository       $userRepository,
+                                CryptoRepository     $cryptoRepository,
                                 UserCryptoRepository $userCryptoRepository)
     {
         $this->userRepository = $userRepository;
@@ -49,15 +48,9 @@ class Rules
 
     protected function validateEmailExists(string $email): void
     {
-        $queryBuilder = Database::getConnection()->createQueryBuilder();
-        $checkIfEmailExists = $queryBuilder
-            ->select('email')
-            ->from('users')
-            ->where('email = ?')
-            ->setParameter(0, $email)
-            ->fetchAssociative();
+        $user = $this->userRepository->getByEmail($email);
 
-        if ($checkIfEmailExists) {
+        if ($user) {
             $this->addError('email', 'this email is already taken!');
         }
     }
@@ -84,23 +77,13 @@ class Rules
 
     protected function validateLoginCredentials(string $email, string $password): ?User
     {
-        $queryBuilder = Database::getConnection()->createQueryBuilder();
-        $user = $queryBuilder
-            ->select('*')
-            ->from('users')
-            ->where('email = ?')
-            ->setParameter(0, $email)->fetchAssociative();
+        $user = $this->userRepository->getByEmail($email);
         if ($user) {
-            $validPassword = password_verify($password, $user['password']);
-            if ($validPassword) {
-                return new User(
-                    $user['id'],
-                    $user['name'],
-                    $user['email'],
-                    $user['password']
-                );
+            if (password_verify($password, $user->getPassword())) {
+                return $user;
             }
         }
+
         $this->addError('email', 'wrong email or password');
         return null;
     }
@@ -113,7 +96,7 @@ class Rules
         }
     }
 
-    protected function validateBuyCrypto (BuyAndSellCryptoFormRequest $request): void
+    protected function validateBuyCrypto(BuyAndSellCryptoFormRequest $request): void
     {
         $user = $this->userRepository->getById($request->getUserId());
         $coin = $this->cryptoRepository->getCoin($request->getCoinId());
@@ -123,7 +106,7 @@ class Rules
         }
     }
 
-    protected function validateSellCrypto (BuyAndSellCryptoFormRequest $request): void
+    protected function validateSellCrypto(BuyAndSellCryptoFormRequest $request): void
     {
         $user = $this->userRepository->getById($request->getUserId());
         $userCoin = $this->userCryptoRepository->get($user->getId(), $request->getCoinId());

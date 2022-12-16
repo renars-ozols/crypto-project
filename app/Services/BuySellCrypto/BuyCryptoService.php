@@ -17,9 +17,9 @@ class BuyCryptoService
     private UserCryptoRepository $userCryptoRepository;
     private TransactionsRepository $transactionsRepository;
 
-    public function __construct(UserRepository          $userRepository,
-                                CryptoRepository        $cryptoRepository,
-                                UserCryptoRepository    $userCryptoRepository,
+    public function __construct(UserRepository         $userRepository,
+                                CryptoRepository       $cryptoRepository,
+                                UserCryptoRepository   $userCryptoRepository,
                                 TransactionsRepository $transactionsRepository)
     {
         $this->userRepository = $userRepository;

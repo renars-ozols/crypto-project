@@ -13,10 +13,12 @@ use App\Validation\Validation;
 class RegisterController
 {
     private RegisterService $registerService;
+    private Validation $validation;
 
-    public function __construct(RegisterService $registerService)
+    public function __construct(RegisterService $registerService, Validation $validation)
     {
         $this->registerService = $registerService;
+        $this->validation = $validation;
     }
 
     public function showForm(): Template
@@ -26,8 +28,7 @@ class RegisterController
 
     public function store(): Redirect
     {
-        $validation = new Validation();
-        $validation->validateRegistrationForm(new UserRegistrationFormRequest(
+        $this->validation->validateRegistrationForm(new UserRegistrationFormRequest(
             $_POST['name'],
             $_POST['email'],
             $_POST['password'],
@@ -38,13 +39,16 @@ class RegisterController
             return new Redirect('/register');
         }
 
-        $this->registerService->execute(new RegisterServiceRequest(
+        $user = $this->registerService->execute(new RegisterServiceRequest(
             $_POST['name'],
             $_POST['email'],
             $_POST['password']
         ));
 
-        Authentication::loginByEmail($_POST['email']);
+        if ($user) {
+            Authentication::loginById($user);
+            return new Redirect('/dashboard');
+        }
 
         return new Redirect('/');
     }

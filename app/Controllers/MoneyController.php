@@ -16,7 +16,7 @@ class MoneyController
 
     public function __construct(DepositMoneyService  $depositMoneyService,
                                 WithdrawMoneyService $withdrawMoneyService,
-                                Validation $validation)
+                                Validation           $validation)
     {
         $this->depositMoneyService = $depositMoneyService;
         $this->withdrawMoneyService = $withdrawMoneyService;

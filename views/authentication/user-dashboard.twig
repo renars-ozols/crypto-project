@@ -21,7 +21,8 @@
                     <form action="/withdraw" method="post">
                         <div class="text-center">
                             <label for="withdraw" class="col-form-label">Amount</label>
-                            <input type="number" id="withdraw" name="amount" class="form-control {{ errors.amount ? 'is-invalid' }}" aria-describedby="buy">
+                            <input type="number" id="withdraw" name="amount"
+                                   class="form-control {{ errors.amount ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-outline-secondary" type="submit">Withdraw</button>
@@ -55,12 +56,15 @@
                         <th scope="row">{{ key+1 }}</th>
                         <td>
                             <div class="d-flex align-items-center">
-                                <img src="{{ entry.coinLogo }}" alt="logo {{ entry.id }}" class="rounded-circle me-3" width="40px">
-                                <h5 class="m-0">{{ entry.coinName }} <span class="badge bg-secondary">{{ entry.symbol }}</span></h5>
+                                <img src="{{ entry.coinLogo }}" alt="logo {{ entry.id }}" class="rounded-circle me-3"
+                                     width="40px">
+                                <h5 class="m-0">{{ entry.coinName }} <span
+                                            class="badge bg-secondary">{{ entry.symbol }}</span></h5>
                             </div>
                         </td>
                         <td class="align-middle"><span>{{ entry.amount|number_format(2) }}</span></td>
-                        <td class="align-middle"><span>~${{ (entry.currentPrice * entry.amount)|number_format(2) }}</span></td>
+                        <td class="align-middle">
+                            <span>~${{ (entry.currentPrice * entry.amount)|number_format(2) }}</span></td>
                         <td class="align-middle"><span>${{ entry.averagePrice|number_format(2) }}</span></td>
                         <td class="align-middle d-flex flex-column">
                             {% set change = (entry.currentPrice - entry.averagePrice) %}
@@ -75,7 +79,8 @@
                                 {% endif %}
                             </span>
                         </td>
-                        <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ entry.coinId }}">Trade</a></td>
+                        <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ entry.coinId }}">Trade</a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -105,7 +110,8 @@
                         <td>{{ transaction.coinName }}</td>
                         <td>${{ transaction.coinPrice|number_format(2) }}</td>
                         <td class="align-middle"><span>{{ transaction.amount|number_format(2) }}</span></td>
-                        <td class="align-middle"><span>${{ (transaction.coinPrice * transaction.amount)|number_format(2) }}</span></td>
+                        <td class="align-middle">
+                            <span>${{ (transaction.coinPrice * transaction.amount)|number_format(2) }}</span></td>
                         <td class="align-middle"><span>{{ transaction.createdAt }}</span></td>
                     </tr>
                 {% endfor %}

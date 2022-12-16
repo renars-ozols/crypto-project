@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\Users\UserRepository;
 
 class RegisterService
@@ -13,8 +14,9 @@ class RegisterService
         $this->repository = $repository;
     }
 
-    public function execute(RegisterServiceRequest $request): void
+    public function execute(RegisterServiceRequest $request): ?User
     {
         $this->repository->add($request);
+        return $this->repository->getByEmail($request->getEmail());
     }
 }

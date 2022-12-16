@@ -17,12 +17,12 @@ class IndexUserDashboardService
     public function __construct(UserRepository         $userRepository,
                                 TransactionsRepository $transactionsRepository,
                                 UserCryptoRepository   $userCryptoRepository,
-                                CryptoRepository $cryptoRepository)
+                                CryptoRepository       $cryptoRepository)
     {
-        $this->userRepository         = $userRepository;
+        $this->userRepository = $userRepository;
         $this->transactionsRepository = $transactionsRepository;
-        $this->userCryptoRepository   = $userCryptoRepository;
-        $this->cryptoRepository       = $cryptoRepository;
+        $this->userCryptoRepository = $userCryptoRepository;
+        $this->cryptoRepository = $cryptoRepository;
     }
 
     public function execute(int $userId): IndexUserDashboardResponse
@@ -31,19 +31,21 @@ class IndexUserDashboardService
         $portfolio = $this->userCryptoRepository->getAll($user->getId());
         $transactions = $this->transactionsRepository->getAll($user->getId());
 
-        $queryIds = [];
-        foreach ($portfolio->getPortfolio() as $coin) {
-            $queryIds[] = $coin->getCoinId();
+        if ($portfolio) {
+            $queryIds = [];
+            foreach ($portfolio->getPortfolio() as $coin) {
+                $queryIds[] = $coin->getCoinId();
+            }
+
+            $averagePrices = $this->transactionsRepository->getAverageBuyingPrices($user->getId());
+            $currentPrices = $this->cryptoRepository->getCurrentPrices(implode(',', $queryIds));
+
+            foreach ($portfolio->getPortfolio() as $coin) {
+                $coin->setCurrentPrice($currentPrices->data->{$coin->getCoinId()}->quote->USD->price);
+                $coin->setAveragePrice((float)$averagePrices[$coin->getCoinId()]);
+            }
+
         }
-
-        $averagePrices = $this->transactionsRepository->getAverageBuyingPrices($user->getId());
-        $currentPrices = $this->cryptoRepository->getCurrentPrices(implode(',', $queryIds));
-
-        foreach ($portfolio->getPortfolio() as $coin) {
-            $coin->setCurrentPrice($currentPrices->data->{$coin->getCoinId()}->quote->USD->price);
-            $coin->setAveragePrice((float)$averagePrices[$coin->getCoinId()]);
-        }
-
-        return new IndexUserDashboardResponse($portfolio, $transactions);
+        return new IndexUserDashboardResponse($transactions, $portfolio);
     }
 }

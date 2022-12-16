@@ -10,7 +10,6 @@ class MySQLUserCryptoRepository implements UserCryptoRepository
 {
     private function buildModel(array $row): UserCrypto
     {
-        //TODO: nullable params
         return new UserCrypto(
             (int)$row['user_id'],
             (int)$row['coin_id'],
@@ -20,6 +19,7 @@ class MySQLUserCryptoRepository implements UserCryptoRepository
             (int)$row['id'],
         );
     }
+
     public function getAll(int $userId): ?UserCryptoCollection
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
@@ -51,7 +51,8 @@ class MySQLUserCryptoRepository implements UserCryptoRepository
             ->setParameter(1, $coinId)
             ->executeQuery()
             ->fetchAssociative();
-        return $userCrypto ? $this->buildModel($userCrypto): null;
+
+        return $userCrypto ? $this->buildModel($userCrypto) : null;
     }
 
     public function create(UserCrypto $crypto): void

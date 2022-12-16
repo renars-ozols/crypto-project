@@ -54,7 +54,8 @@
                     <form action="/coin/{{ coin.id }}/buy" method="post">
                         <div class="text-center">
                             <label for="buy" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="buy" class="form-control {{ errors.buyError ? 'is-invalid' }}" aria-describedby="buy">
+                            <input type="number" step="any" name="amount" id="buy"
+                                   class="form-control {{ errors.buyError ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-success" type="submit">Buy</button>
@@ -70,7 +71,8 @@
                     <form action="/coin/{{ coin.id }}/sell" method="post">
                         <div class="text-center">
                             <label for="sell" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="sell" class="form-control {{ errors.sellError ? 'is-invalid' }}" aria-describedby="buy">
+                            <input type="number" step="any" name="amount" id="sell"
+                                   class="form-control {{ errors.sellError ? 'is-invalid' }}" aria-describedby="buy">
                         </div>
                         <div class="d-grid mt-2">
                             <button class="btn btn-danger" type="submit">Sell</button>

@@ -13,8 +13,12 @@ class SearchCryptoService
         $this->repository = $repository;
     }
 
-    public function execute(string $query): int
+    public function execute(string $query): ?int
     {
-        return $this->repository->searchCoin($query);
+        try {
+            return $this->repository->searchCoin($query);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

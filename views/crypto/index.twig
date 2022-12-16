@@ -5,7 +5,8 @@
     <div class="container mt-5">
         <form action="/search" method="get" class="w-50 mx-auto mb-5">
             <div class="input-group">
-                <input type="text" name="query" class="form-control" placeholder="Search coins by symbol..." aria-label="Search query" aria-describedby="button-addon2">
+                <input type="text" name="query" class="form-control" placeholder="Search coins by symbol..."
+                       aria-label="Search query" aria-describedby="button-addon2">
                 <button class="btn btn-secondary" type="submit">Search</button>
             </div>
         </form>
@@ -27,8 +28,10 @@
                     <th scope="row">{{ key+1 }}</th>
                     <td>
                         <div class="d-flex align-items-center">
-                            <img src="{{ crypto.logo }}" alt="logo {{ crypto.id }}" class="rounded-circle me-3" width="40px">
-                            <h5 class="m-0">{{ crypto.name }} <span class="badge bg-secondary">{{ crypto.symbol }}</span></h5>
+                            <img src="{{ crypto.logo }}" alt="logo {{ crypto.id }}" class="rounded-circle me-3"
+                                 width="40px">
+                            <h5 class="m-0">{{ crypto.name }} <span
+                                        class="badge bg-secondary">{{ crypto.symbol }}</span></h5>
                         </div>
                     </td>
                     <td class="align-middle"><span>${{ crypto.price|number_format(2) }}</span></td>
@@ -62,7 +65,8 @@
                             {{ crypto.percentChange7d|number_format(2) }}%
                         </span>
                     </td>
-                    <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ crypto.id }}">Trade</a></td>
+                    <td class="align-middle"><a class="btn btn-outline-secondary" href="/coin/{{ crypto.id }}">Trade</a>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
