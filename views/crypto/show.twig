@@ -51,11 +51,7 @@
             </div>
             <div class="card-footer d-flex justify-content-between my-3">
                 <div class="me-2 flex-grow-1">
-                    <form action="/coin/buy" method="post">
-                        <input type="hidden" name="coin_id" value="{{ coin.id }}">
-                        <input type="hidden" name="coin_name" value="{{ coin.name }}">
-                        <input type="hidden" name="coin_logo" value="{{ coin.logo }}">
-                        <input type="hidden" name="coin_price" value="{{ coin.price }}">
+                    <form action="/coin/{{ coin.id }}/buy" method="post">
                         <div class="text-center">
                             <label for="buy" class="col-form-label">Amount</label>
                             <input type="number" step="any" name="amount" id="buy" class="form-control {{ errors.buyError ? 'is-invalid' }}" aria-describedby="buy">
@@ -71,11 +67,7 @@
                     </form>
                 </div>
                 <div class="ms-2 flex-grow-1">
-                    <form action="/coin/sell" method="post">
-                        <input type="hidden" name="coin_id" value="{{ coin.id }}">
-                        <input type="hidden" name="coin_name" value="{{ coin.name }}">
-                        <input type="hidden" name="coin_logo" value="{{ coin.logo }}">
-                        <input type="hidden" name="coin_price" value="{{ coin.price }}">
+                    <form action="/coin/{{ coin.id }}/sell" method="post">
                         <div class="text-center">
                             <label for="sell" class="col-form-label">Amount</label>
                             <input type="number" step="any" name="amount" id="sell" class="form-control {{ errors.sellError ? 'is-invalid' }}" aria-describedby="buy">

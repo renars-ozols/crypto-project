@@ -4,13 +4,13 @@ namespace App\Models;
 
 class User
 {
-    private string $id;
+    private int $id;
     private string $name;
     private string $email;
     private string $password;
     private float $money;
 
-    public function __construct(string $id, string $name, string $email, string $password, float $money = 0)
+    public function __construct(int $id, string $name, string $email, string $password, float $money = 0)
     {
         $this->id = $id;
         $this->name = $name;
@@ -19,7 +19,7 @@ class User
         $this->money = $money;
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
@@ -42,5 +42,15 @@ class User
     public function getBalance(): float
     {
         return $this->money;
+    }
+
+    public function deductMoney(float $amount): void
+    {
+        $this->money -= $amount;
+    }
+
+    public function addMoney(float $amount): void
+    {
+        $this->money += $amount;
     }
 }

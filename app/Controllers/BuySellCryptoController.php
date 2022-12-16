@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Authentication;
+use App\FormRequests\BuyAndSellCryptoFormRequest;
 use App\Redirect;
 use App\Services\BuySellCrypto\BuyCryptoService;
 use App\Services\BuySellCrypto\BuySellCryptoServiceRequest;
@@ -13,54 +14,53 @@ class BuySellCryptoController
 {
     private BuyCryptoService $buyCryptoService;
     private SellCryptoService $sellCryptoService;
+    private Validation $validation;
 
-    public function __construct(BuyCryptoService $buyCryptoService, SellCryptoService $sellCryptoService)
+    public function __construct(BuyCryptoService $buyCryptoService,
+                                SellCryptoService $sellCryptoService,
+                                Validation $validation)
     {
         $this->buyCryptoService = $buyCryptoService;
         $this->sellCryptoService = $sellCryptoService;
+        $this->validation = $validation;
     }
 
-    public function buyCrypto(): Redirect
+    public function buyCrypto( array $vars): Redirect
     {
-        //TODO: change price from coming from the form to coming from the database
-        //TODO: change that controller method calls only one service method
-        $validation = new Validation();
-        $validation->validateBuyCryptoForm($_POST['amount'], $_POST['coin_price']);
+        $this->validation->validateBuyCryptoForm(new BuyAndSellCryptoFormRequest(
+            Authentication::getAuthId(),
+            (int)$vars['id'],
+            (float)$_POST['amount']
+        ));
 
         if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
-            return new Redirect('/coin/' . $_POST['coin_id']);
+            return new Redirect('/coin/' . $vars['id']);
         }
 
         $this->buyCryptoService->execute(new BuySellCryptoServiceRequest(
             Authentication::getAuthId(),
-            $_POST['coin_id'],
-            $_POST['coin_name'],
-            $_POST['coin_logo'],
-            $_POST['amount'],
-            $_POST['coin_price']
+            (int)$vars['id'],
+            (float)$_POST['amount'],
         ));
         return new Redirect('/dashboard');
     }
 
-    public function sellCrypto(): Redirect
+    public function sellCrypto(array $vars): Redirect
     {
-        //TODO: change price from coming from the form to coming from the database
-        //TODO: change that controller method calls only one service method
-        //TODO: 1.22 || 2.03!!! || 2.24!!!
-        $validation = new Validation();
-        $validation->validateSellCryptoForm($_POST['coin_id'], Authentication::getAuthId(), $_POST['amount']);
+        $this->validation->validateSellCryptoForm(new BuyAndSellCryptoFormRequest(
+            Authentication::getAuthId(),
+            (int)$vars['id'],
+            (float)$_POST['amount'],
+        ));
 
         if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
-            return new Redirect('/coin/' . $_POST['coin_id']);
+            return new Redirect('/coin/' . $vars['id']);
         }
 
         $this->sellCryptoService->execute(new BuySellCryptoServiceRequest(
             Authentication::getAuthId(),
-            $_POST['coin_id'],
-            $_POST['coin_name'],
-            $_POST['coin_logo'],
-            $_POST['amount'],
-            $_POST['coin_price']
+            (int)$vars['id'],
+            (float)$_POST['amount'],
         ));
         return new Redirect('/dashboard');
     }

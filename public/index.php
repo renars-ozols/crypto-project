@@ -25,7 +25,7 @@ $dotenv->load();
 
 $loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
-
+//TODO: cleanup container
 $container = new DI\Container();
 $container->set(
     \App\Repositories\Crypto\CryptoRepository::class,
@@ -36,16 +36,12 @@ $container->set(
     \DI\create(\App\Repositories\Users\MySqlUserRepository::class)
 );
 $container->set(
-    \App\Repositories\Money\MoneyRepository::class,
-    \DI\create(\App\Repositories\Money\MySqlMoneyRepository::class)
+    \App\Repositories\UserCrypto\UserCryptoRepository::class,
+    \DI\create(\App\Repositories\UserCrypto\MySqlUserCryptoRepository::class)
 );
 $container->set(
-    \App\Repositories\BuySellCrypto\BuySellCryptoRepository::class,
-    \DI\create(\App\Repositories\BuySellCrypto\MySqlBuySellCryptoRepository::class)
-);
-$container->set(
-    \App\Repositories\UserDashboard\UserDashboardRepository::class,
-    \DI\create(\App\Repositories\UserDashboard\MySqlUserDashboardRepository::class)
+    \App\Repositories\Transactions\TransactionsRepository::class,
+    \DI\create(\App\Repositories\Transactions\MySqlTransactionsRepository::class)
 );
 
 //TODO: Can implement auto read from directory
@@ -63,6 +59,8 @@ foreach ($viewVariables as $variable) {
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $route) {
     $route->addRoute('GET', '/', [CryptoController::class, 'index']);
     $route->addRoute('GET', '/coin/{id:\d+}', [CryptoController::class, 'show']);
+    $route->addRoute('POST', '/coin/{id:\d+}/buy', [BuySellCryptoController::class, 'buyCrypto']);
+    $route->addRoute('POST', '/coin/{id:\d+}/sell', [BuySellCryptoController::class, 'sellCrypto']);
     $route->addRoute('GET', '/search', [CryptoController::class, 'search']);
     $route->addRoute('GET', '/register', [RegisterController::class, 'showForm']);
     $route->addRoute('POST', '/register', [RegisterController::class, 'store']);
@@ -72,8 +70,6 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('GET', '/dashboard', [UserDashboardController::class, 'index']);
     $route->addRoute('POST', '/deposit', [MoneyController::class, 'deposit']);
     $route->addRoute('POST', '/withdraw', [MoneyController::class, 'withdraw']);
-    $route->addRoute('POST', '/coin/buy', [BuySellCryptoController::class, 'buyCrypto']);
-    $route->addRoute('POST', '/coin/sell', [BuySellCryptoController::class, 'sellCrypto']);
 });
 
 // Fetch method and URI from somewhere

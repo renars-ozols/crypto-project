@@ -2,6 +2,7 @@
 
 namespace App\Validation;
 
+use App\FormRequests\BuyAndSellCryptoFormRequest;
 use App\FormRequests\UserLoginFormRequest;
 use App\FormRequests\UserRegistrationFormRequest;
 use App\Models\User;
@@ -26,18 +27,18 @@ class Validation extends Rules
         return $user ?: null;
     }
 
-    public function validateMoneyWithdrawalForm(float $amount): void
+    public function validateMoneyWithdrawalForm(float $amount, int $userId): void
     {
-        $this->validateMoneyWithdrawal($amount);
+        $this->validateMoneyWithdrawal($amount, $userId);
     }
 
-    public function validateBuyCryptoForm (string $coinPrice, string $amount): void
+    public function validateBuyCryptoForm (BuyAndSellCryptoFormRequest $request): void
     {
-        $this->validateBuyCrypto($coinPrice, $amount);
+        $this->validateBuyCrypto($request);
     }
 
-    public function validateSellCryptoForm (string $coinId, string $userId, string $amount): void
+    public function validateSellCryptoForm (BuyAndSellCryptoFormRequest $request): void
     {
-        $this->validateSellCrypto($coinId, $userId, $amount);
+        $this->validateSellCrypto($request);
     }
 }

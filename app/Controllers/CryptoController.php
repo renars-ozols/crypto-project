@@ -32,8 +32,7 @@ class CryptoController
 
     public function show(array $vars): Template
     {
-        $coin = $this->showCryptoService->execute($vars['id']);
-        //$coin = [];
+        $coin = $this->showCryptoService->execute((int)$vars['id']);
         return new Template('/crypto/show.twig', ['coin' => $coin]);
     }
 

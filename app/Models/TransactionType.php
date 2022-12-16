@@ -2,8 +2,14 @@
 
 namespace App\Models;
 
-class TransactionType
+use MyCLabs\Enum\Enum;
+
+/**
+ * @method static TransactionType BUY()
+ * @method static TransactionType SELL()
+ */
+final class TransactionType extends Enum
 {
-    const BUY = 'buy';
-    const SELL = 'sell';
+    private const BUY = 'buy';
+    private const SELL = 'sell';
 }

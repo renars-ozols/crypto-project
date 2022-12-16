@@ -2,9 +2,9 @@
 
 namespace App\Models\Collections;
 
-use App\Models\Portfolio;
+use App\Models\UserCrypto;
 
-class PortfolioCollection
+class UserCryptoCollection
 {
     private array $portfolio;
 
@@ -15,7 +15,7 @@ class PortfolioCollection
         }
     }
 
-    public function add(Portfolio $portfolio): void
+    public function add(UserCrypto $portfolio): void
     {
         $this->portfolio[] = $portfolio;
     }

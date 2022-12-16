@@ -2,20 +2,21 @@
 
 namespace App\Services\Money;
 
-use App\Repositories\Money\MoneyRepository;
+use App\Repositories\Users\UserRepository;
 
 class WithdrawMoneyService
 {
-    private MoneyRepository $repository;
+    private UserRepository $repository;
 
-    public function __construct(MoneyRepository $repository)
+    public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
     }
 
-    public function execute(float $amount, string $userId): void
+    public function execute(float $amount, int $userId): void
     {
-        $this->repository->withdraw($amount, $userId);
+        $user = $this->repository->getById($userId);
+        $user->deductMoney($amount);
+        $this->repository->save($user);
     }
 }
-

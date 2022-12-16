@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Services\BuySellCrypto;
+namespace App\FormRequests;
 
-class BuySellCryptoServiceRequest
+class BuyAndSellCryptoFormRequest
 {
     private int $userId;
     private int $coinId;

@@ -12,17 +12,20 @@ class MoneyController
 {
     private DepositMoneyService $depositMoneyService;
     private WithdrawMoneyService $withdrawMoneyService;
+    private Validation $validation;
 
-    public function __construct(DepositMoneyService  $depositMoneyService, WithdrawMoneyService $withdrawMoneyService)
+    public function __construct(DepositMoneyService  $depositMoneyService,
+                                WithdrawMoneyService $withdrawMoneyService,
+                                Validation $validation)
     {
         $this->depositMoneyService = $depositMoneyService;
         $this->withdrawMoneyService = $withdrawMoneyService;
+        $this->validation = $validation;
     }
 
     public function deposit(): Redirect
     {
-        $amount = (float)$_POST['amount'];
-        $this->depositMoneyService->execute($amount, Authentication::getAuthId());
+        $this->depositMoneyService->execute((float)$_POST['amount'], Authentication::getAuthId());
         return new Redirect('/dashboard');
     }
 
@@ -30,8 +33,7 @@ class MoneyController
     {
         $amount = (float)$_POST['amount'];
 
-        $validation = new Validation();
-        $validation->validateMoneyWithdrawalForm($amount);
+        $this->validation->validateMoneyWithdrawalForm($amount, Authentication::getAuthId());
 
         if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
             return new Redirect('/dashboard');

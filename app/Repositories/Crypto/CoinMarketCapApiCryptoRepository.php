@@ -65,7 +65,7 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         return $coinCollection;
     }
 
-    public function getCoin(string $id): Crypto
+    public function getCoin(int $id): Crypto
     {
         $coin = $this->fetch('v2/cryptocurrency/quotes/latest', ['id' => $id]);
         $logo = $this->fetch('v2/cryptocurrency/info', ['id' => $id]);
@@ -79,5 +79,10 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
     {
         $coin = $this->fetch('v1/cryptocurrency/map', ['symbol' => $query]);
         return $coin->data[0]->id;
+    }
+
+    public function getCurrentPrices(string $ids): stdClass
+    {
+        return $this->fetch('v2/cryptocurrency/quotes/latest', ['id' => $ids]);
     }
 }

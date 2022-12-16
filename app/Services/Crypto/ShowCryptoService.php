@@ -14,7 +14,7 @@ class ShowCryptoService
         $this->repository = $repository;
     }
 
-    public function execute(string $id): Crypto
+    public function execute(int $id): Crypto
     {
        return $this->repository->getCoin($id);
     }

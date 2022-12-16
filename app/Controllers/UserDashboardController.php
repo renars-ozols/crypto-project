@@ -3,29 +3,25 @@
 namespace App\Controllers;
 
 use App\Authentication;
-use App\Services\UserDashboard\GetPortfolioService;
-use App\Services\UserDashboard\GetTransactionsService;
+use App\Services\UserDashboard\IndexUserDashboardService;
 use App\Template;
 
 class UserDashboardController
 {
-    private GetPortfolioService $getPortfolioService;
-    private GetTransactionsService $getTransactionsService;
 
-    public function __construct(GetPortfolioService $getPortfolioService,
-                                GetTransactionsService $getTransactionsService)
+    private IndexUserDashboardService $indexUserDashboardService;
+
+    public function __construct(IndexUserDashboardService $indexUserDashboardService)
     {
-        $this->getPortfolioService = $getPortfolioService;
-        $this->getTransactionsService = $getTransactionsService;
+        $this->indexUserDashboardService = $indexUserDashboardService;
     }
-
 
     public function index(): Template
     {
-        $portfolio = $this->getPortfolioService->execute(Authentication::getAuthId());
-        $transactions = $this->getTransactionsService->execute(Authentication::getAuthId());
+        $data = $this->indexUserDashboardService->execute(Authentication::getAuthId());
         return new Template('/authentication/user-dashboard.twig',
-            ['portfolio' => $portfolio ? $portfolio->getPortfolio() : [],
-            'transactions' =>$transactions ? $transactions->getTransactions() : [] ]);
+            ['portfolio' => $data->getPortfolio()->getPortfolio(),
+                'transactions' => $data->getTransactions()->getTransactions()
+            ]);
     }
 }

@@ -3,13 +3,14 @@
 namespace App;
 
 use App\Models\User;
+use App\Repositories\Users\MySQLUserRepository;
 
 class Authentication
 {
-    public static function getAuthId(): ?string
+    public static function getAuthId(): ?int
     {
         if (isset($_SESSION['auth_id'])) {
-            return $_SESSION['auth_id'];
+            return (int)$_SESSION['auth_id'];
         }
         return null;
     }
@@ -35,20 +36,7 @@ class Authentication
 
     public static function getUser(): User
     {
-        $queryBuilder = Database::getConnection()->createQueryBuilder();
-        $user = $queryBuilder
-            ->select('*')
-            ->from('users')
-            ->where('id = ?')
-            ->setParameter(0, self::getAuthId())
-            ->fetchAssociative();
-
-        return new User(
-            $user['id'],
-            $user['name'],
-            $user['email'],
-            $user['password'],
-            (float)$user['money']
-        );
+        $userRepository = new MySQLUserRepository();
+        return $userRepository->getById(self::getAuthId());
     }
 }

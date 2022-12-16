@@ -12,6 +12,7 @@
     "respect/validation": "^2.2",
     "guzzlehttp/guzzle": "^7.5",
     "ext-json": "*",
-    "php-di/php-di": "^6.4"
+    "php-di/php-di": "^6.4",
+    "myclabs/php-enum": "^1.8"
   }
 }

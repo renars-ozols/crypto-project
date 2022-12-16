@@ -4,38 +4,34 @@ namespace App\Models;
 
 class Transaction
 {
-    private int $id;
     private int $userId;
     private int $coinId;
-    private string $type;
+    private TransactionType $type;
     private string $coinName;
     private float $coinPrice;
     private float $amount;
-    private string $createdAt;
+    private ?int $id;
+    private ?string $createdAt;
 
-    public function __construct(int             $id,
-                                int             $userId,
+    public function __construct(int             $userId,
                                 int             $coinId,
-                                string $type,
+                                TransactionType $type,
                                 string          $coinName,
                                 float           $coinPrice,
                                 float           $amount,
-                                string          $createdAt)
+                                ?int             $id = null,
+                                ?string          $createdAt = null)
     {
-        $this->id = $id;
         $this->userId = $userId;
         $this->coinId = $coinId;
         $this->type = $type;
         $this->coinName = $coinName;
         $this->coinPrice = $coinPrice;
         $this->amount = $amount;
+        $this->id = $id;
         $this->createdAt = $createdAt;
     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getUserId(): int
     {
@@ -47,7 +43,7 @@ class Transaction
         return $this->coinId;
     }
 
-    public function getType(): string
+    public function getType(): TransactionType
     {
         return $this->type;
     }
@@ -67,7 +63,12 @@ class Transaction
         return $this->amount;
     }
 
-    public function getCreatedAt(): string
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }

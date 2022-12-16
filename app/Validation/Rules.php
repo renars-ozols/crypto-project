@@ -2,14 +2,31 @@
 
 namespace App\Validation;
 
-use App\Authentication;
 use App\Database;
+use App\FormRequests\BuyAndSellCryptoFormRequest;
 use App\Models\User;
+use App\Repositories\Crypto\CryptoRepository;
+use App\Repositories\UserCrypto\UserCryptoRepository;
+use App\Repositories\Users\UserRepository;
 use Respect\Validation\Exceptions\ValidationException;
 use Respect\Validation\Validator as validator;
 
 class Rules
 {
+    //TODO: 144
+    private UserRepository $userRepository;
+    private CryptoRepository $cryptoRepository;
+    private UserCryptoRepository $userCryptoRepository;
+
+    public function __construct(UserRepository $userRepository,
+                                CryptoRepository $cryptoRepository,
+                                UserCryptoRepository $userCryptoRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->cryptoRepository = $cryptoRepository;
+        $this->userCryptoRepository = $userCryptoRepository;
+    }
+
     protected function validateUserName(string $name): void
     {
         $userNameValidator = validator::alpha()->length(3, 15);
@@ -65,13 +82,6 @@ class Rules
         }
     }
 
-    protected function validateCurrentPassword(string $password): void
-    {
-        if (!password_verify($password, Authentication::getUser()->getPassword())) {
-            $this->addError('password', 'wrong password!');
-        }
-    }
-
     protected function validateLoginCredentials(string $email, string $password): ?User
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
@@ -95,36 +105,30 @@ class Rules
         return null;
     }
 
-    protected function validateMoneyWithdrawal(float $amount): void
+    protected function validateMoneyWithdrawal(float $amount, int $userId): void
     {
-        $user = Authentication::getUser();
+        $user = $this->userRepository->getById($userId);
         if ($amount > $user->getBalance()) {
             $this->addError('amount', 'you do not have enough money!');
         }
     }
 
-    protected function validateBuyCrypto (string $coinPrice, string $amount): void
+    protected function validateBuyCrypto (BuyAndSellCryptoFormRequest $request): void
     {
-        $user = Authentication::getUser();
-        $total = $coinPrice * $amount;
+        $user = $this->userRepository->getById($request->getUserId());
+        $coin = $this->cryptoRepository->getCoin($request->getCoinId());
+        $total = $coin->getPrice() * $request->getAmount();
         if ($total > $user->getBalance()) {
             $this->addError('buyError', 'you do not have enough money!');
         }
     }
 
-    protected function validateSellCrypto (string $coinId, string $userId, string $amount): void
+    protected function validateSellCrypto (BuyAndSellCryptoFormRequest $request): void
     {
-        $queryBuilder = Database::getConnection()->createQueryBuilder();
-        $userCoin = $queryBuilder
-            ->select('*')
-            ->from('wallet')
-            ->where('user_id = ?')
-            ->andWhere('coin_id = ?')
-            ->setParameter(0, $userId)
-            ->setParameter(1, $coinId)
-            ->fetchAssociative();
+        $user = $this->userRepository->getById($request->getUserId());
+        $userCoin = $this->userCryptoRepository->get($user->getId(), $request->getCoinId());
 
-        if (!$userCoin || $amount > $userCoin['amount']) {
+        if (!$userCoin || $request->getAmount() > $userCoin->getAmount()) {
             $this->addError('sellError', 'invalid request!');
         }
     }
