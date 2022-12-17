@@ -3,6 +3,7 @@
 namespace App\Repositories\Users;
 
 use App\Database;
+use App\Models\Collections\UsersCollection;
 use App\Models\User;
 use App\Services\RegisterServiceRequest;
 
@@ -17,6 +18,22 @@ class MySQLUserRepository implements UserRepository
             $user['password'],
             (float)$user['money']
         );
+    }
+
+    public function getAll(): UsersCollection
+    {
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $result = $queryBuilder->select('*')
+            ->from('users')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $users = new UsersCollection();
+
+        foreach ($result as $user) {
+            $users->add($this->buildModel($user));
+        }
+        return $users;
     }
 
     public function add(RegisterServiceRequest $request): void

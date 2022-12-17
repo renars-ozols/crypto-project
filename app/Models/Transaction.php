@@ -10,6 +10,7 @@ class Transaction
     private string $coinName;
     private float $coinPrice;
     private float $amount;
+    private float $total;
     private ?int $id;
     private ?string $createdAt;
 
@@ -28,6 +29,7 @@ class Transaction
         $this->coinName = $coinName;
         $this->coinPrice = $coinPrice;
         $this->amount = $amount;
+        $this->total = $coinPrice * $amount;
         $this->id = $id;
         $this->createdAt = $createdAt;
     }
@@ -61,6 +63,11 @@ class Transaction
     public function getAmount(): float
     {
         return $this->amount;
+    }
+
+    public function getTotal(): float
+    {
+        return $this->total;
     }
 
     public function getId(): ?int

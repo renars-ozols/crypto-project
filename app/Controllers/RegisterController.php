@@ -35,7 +35,7 @@ class RegisterController
             $_POST['passwordConfirm']
         ));
 
-        if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
+        if ($this->validation->hasErrors()) {
             return new Redirect('/register');
         }
 

@@ -1,0 +1,68 @@
+{% extends "layout.twig" %}
+
+{% block title %}Transfer{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="card border-secondary mb-3 mx-auto w-50">
+            <div class="card-header d-flex align-items-center justify-content-center">
+                <img src="{{ coin.coinLogo }}" alt="logo {{ coin.id }}" class="rounded-circle me-3" width="100px">
+                <div class="text-end">
+                    <span class="badge bg-secondary fs-5">{{ coin.symbol }}</span>
+                    <h1 class="m-0">{{ coin.coinName }}</h1>
+                </div>
+            </div>
+            <div class="card-body text-secondary d-flex flex-column justify-content-center align-items-center">
+                <div>
+                    <p class="fw-bold fs-4">You have: {{ coin.amount|number_format(4) }}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <form action="/coin/{{ coin.coinId }}/transfer" method="post"
+                      class="d-flex align-items-start justify-content-between flex-wrap">
+                    <div class="d-flex align-items-center">
+                        <p class="fw-bold fs-4 text-secondary me-2">From: </p>
+                        <p class="fs-4">{{ auth.name }}</p>
+                    </div>
+                    <div class="d-flex" style="font-size: 40px;">
+                        <i class="icon-exchange text-info"></i>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <p class="fw-bold fs-4 text-secondary me-2">To: </p>
+                        <select name="recipient_id" class="form-select {{ errors.recipient ? 'is-invalid' }}"
+                                aria-label="Default select example">
+                            <option selected>Select recipient</option>
+                            {% for user in users %}
+                                <option value={{ user.id }}>{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="me-2 flex-grow-1">
+                        <div>
+                            <label for="amount" class="col-form-label">Amount</label>
+                            <input type="number" step="any" name="amount" id="amount"
+                                   class="form-control {{ errors.amount ? 'is-invalid' }}" aria-describedby="amount">
+                            {% if errors.amount %}
+                                <div class="text-danger">
+                                    {{ errors.amount }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label for="password" class="col-form-label">Password</label>
+                            <input type="password" name="password" id="password"
+                                   class="form-control {{ errors.password ? 'is-invalid' }}" aria-describedby="buy">
+                            {% if errors.password %}
+                                <div class="text-danger">
+                                    {{ errors.password }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-info fw-bold" type="submit">Transfer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

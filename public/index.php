@@ -8,6 +8,7 @@ use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
 use App\Controllers\MoneyController;
 use App\Controllers\RegisterController;
+use App\Controllers\TransferCryptoController;
 use App\Controllers\UserDashboardController;
 use App\Redirect;
 use App\Template;
@@ -61,6 +62,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('GET', '/coin/{id:\d+}', [CryptoController::class, 'show']);
     $route->addRoute('POST', '/coin/{id:\d+}/buy', [BuySellCryptoController::class, 'buyCrypto']);
     $route->addRoute('POST', '/coin/{id:\d+}/sell', [BuySellCryptoController::class, 'sellCrypto']);
+    $route->addRoute('GET', '/coin/{id:\d+}/transfer', [TransferCryptoController::class, 'show']);
+    $route->addRoute('POST', '/coin/{id:\d+}/transfer', [TransferCryptoController::class, 'transfer']);
     $route->addRoute('GET', '/search', [CryptoController::class, 'search']);
     $route->addRoute('GET', '/register', [RegisterController::class, 'showForm']);
     $route->addRoute('POST', '/register', [RegisterController::class, 'store']);

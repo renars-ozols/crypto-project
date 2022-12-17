@@ -39,10 +39,13 @@ class IndexUserDashboardService
 
             $averagePrices = $this->transactionsRepository->getAverageBuyingPrices($user->getId());
             $currentPrices = $this->cryptoRepository->getCurrentPrices(implode(',', $queryIds));
-
             foreach ($portfolio->getPortfolio() as $coin) {
                 $coin->setCurrentPrice($currentPrices->data->{$coin->getCoinId()}->quote->USD->price);
-                $coin->setAveragePrice((float)$averagePrices[$coin->getCoinId()]);
+                $coin->setAveragePrice(
+                    array_key_exists($coin->getCoinId(), $averagePrices)
+                        ? (float)$averagePrices[$coin->getCoinId()]
+                        : 0
+                );
             }
 
         }

@@ -3,12 +3,18 @@
 namespace App\Validation;
 
 use App\FormRequests\BuyAndSellCryptoFormRequest;
+use App\FormRequests\TransferCryptoFormRequest;
 use App\FormRequests\UserLoginFormRequest;
 use App\FormRequests\UserRegistrationFormRequest;
 use App\Models\User;
 
 class Validation extends Rules
 {
+    public function hasErrors(): bool
+    {
+        return isset($_SESSION['errors']) && count($_SESSION['errors']) > 0;
+    }
+
     public function validateRegistrationForm(UserRegistrationFormRequest $request): void
     {
         $this->validateUserName($request->getName());
@@ -40,5 +46,12 @@ class Validation extends Rules
     public function validateSellCryptoForm(BuyAndSellCryptoFormRequest $request): void
     {
         $this->validateSellCrypto($request);
+    }
+
+    public function validateTransferCryptoForm(TransferCryptoFormRequest $request): void
+    {
+        $this->validateValueGreaterThanZero($request->getAmount());
+        $this->validateTransferCrypto($request);
+        $this->validateCorrectPassword($request->getPassword(), $request->getUserId());
     }
 }

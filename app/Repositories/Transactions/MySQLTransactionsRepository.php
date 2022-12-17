@@ -55,6 +55,7 @@ class MySQLTransactionsRepository implements TransactionsRepository
                 'coin_name' => ':coin_name',
                 'coin_price' => ':coin_price',
                 'amount' => ':amount',
+                'total' => ':total',
             ])
             ->setParameters([
                 'user_id' => $transaction->getUserId(),
@@ -63,6 +64,7 @@ class MySQLTransactionsRepository implements TransactionsRepository
                 'coin_name' => $transaction->getCoinName(),
                 'coin_price' => $transaction->getCoinPrice(),
                 'amount' => $transaction->getAmount(),
+                'total' => $transaction->getTotal(),
             ])
             ->executeQuery();
     }

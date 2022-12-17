@@ -4,6 +4,7 @@ namespace App\Validation;
 
 use App\Database;
 use App\FormRequests\BuyAndSellCryptoFormRequest;
+use App\FormRequests\TransferCryptoFormRequest;
 use App\Models\User;
 use App\Repositories\Crypto\CryptoRepository;
 use App\Repositories\UserCrypto\UserCryptoRepository;
@@ -24,6 +25,16 @@ class Rules
         $this->userRepository = $userRepository;
         $this->cryptoRepository = $cryptoRepository;
         $this->userCryptoRepository = $userCryptoRepository;
+    }
+
+    protected function validateValueGreaterThanZero(float $value, string $errorName = 'amount'): void
+    {
+        $valueValidator = validator::floatVal()->positive();
+        try {
+            $valueValidator->check($value);
+        } catch (ValidationException $exception) {
+            $this->addError($errorName, 'Amount must be greater than zero.');
+        }
     }
 
     protected function validateUserName(string $name): void
@@ -88,6 +99,18 @@ class Rules
         return null;
     }
 
+    protected function validateCorrectPassword(string $password, int $userId): void
+    {
+        $user = $this->userRepository->getById($userId);
+        if ($user) {
+            if (!password_verify($password, $user->getPassword())) {
+                $this->addError('password', 'wrong password');
+            }
+            return;
+        }
+        $this->addError('password', 'something went wrong!');
+    }
+
     protected function validateMoneyWithdrawal(float $amount, int $userId): void
     {
         $user = $this->userRepository->getById($userId);
@@ -113,6 +136,21 @@ class Rules
 
         if (!$userCoin || $request->getAmount() > $userCoin->getAmount()) {
             $this->addError('sellError', 'invalid request!');
+        }
+    }
+
+    protected function validateTransferCrypto(TransferCryptoFormRequest $request): void
+    {
+        $user = $this->userRepository->getById($request->getUserId());
+        $userCoin = $this->userCryptoRepository->get($user->getId(), $request->getCoinId());
+        $recipient = $this->userRepository->getById($request->getRecipientId());
+
+        if (!$recipient) {
+            $this->addError('recipient', 'invalid recipient!');
+        }
+
+        if (!$userCoin || $request->getAmount() > $userCoin->getAmount()) {
+            $this->addError('amount', 'invalid amount!');
         }
     }
 

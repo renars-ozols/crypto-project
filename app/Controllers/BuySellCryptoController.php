@@ -33,7 +33,7 @@ class BuySellCryptoController
             (float)$_POST['amount']
         ));
 
-        if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
+        if ($this->validation->hasErrors()) {
             return new Redirect('/coin/' . $vars['id']);
         }
 
@@ -53,7 +53,7 @@ class BuySellCryptoController
             (float)$_POST['amount'],
         ));
 
-        if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
+        if ($this->validation->hasErrors()) {
             return new Redirect('/coin/' . $vars['id']);
         }
 

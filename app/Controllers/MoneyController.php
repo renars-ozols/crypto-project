@@ -35,7 +35,7 @@ class MoneyController
 
         $this->validation->validateMoneyWithdrawalForm($amount, Authentication::getAuthId());
 
-        if (isset($_SESSION['errors']) && count($_SESSION['errors']) > 0) {
+        if ($this->validation->hasErrors()) {
             return new Redirect('/dashboard');
         }
 
