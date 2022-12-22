@@ -3,10 +3,11 @@
 namespace App\Validation;
 
 use App\Database;
-use App\FormRequests\BuyAndSellCryptoFormRequest;
+use App\FormRequests\CryptoFormRequest;
 use App\FormRequests\TransferCryptoFormRequest;
 use App\Models\User;
 use App\Repositories\Crypto\CryptoRepository;
+use App\Repositories\ShortSell\ShortSellRepository;
 use App\Repositories\UserCrypto\UserCryptoRepository;
 use App\Repositories\Users\UserRepository;
 use Respect\Validation\Exceptions\ValidationException;
@@ -17,14 +18,17 @@ class Rules
     private UserRepository $userRepository;
     private CryptoRepository $cryptoRepository;
     private UserCryptoRepository $userCryptoRepository;
+    private ShortSellRepository $shortSellRepository;
 
     public function __construct(UserRepository       $userRepository,
                                 CryptoRepository     $cryptoRepository,
-                                UserCryptoRepository $userCryptoRepository)
+                                UserCryptoRepository $userCryptoRepository,
+                                ShortSellRepository  $shortSellRepository)
     {
         $this->userRepository = $userRepository;
         $this->cryptoRepository = $cryptoRepository;
         $this->userCryptoRepository = $userCryptoRepository;
+        $this->shortSellRepository = $shortSellRepository;
     }
 
     protected function validateValueGreaterThanZero(float $value, string $errorName = 'amount'): void
@@ -35,6 +39,11 @@ class Rules
         } catch (ValidationException $exception) {
             $this->addError($errorName, 'Amount must be greater than zero.');
         }
+    }
+
+    private function addError(string $name, string $message): void
+    {
+        $_SESSION['errors'][$name] = $message;
     }
 
     protected function validateUserName(string $name): void
@@ -119,23 +128,23 @@ class Rules
         }
     }
 
-    protected function validateBuyCrypto(BuyAndSellCryptoFormRequest $request): void
+    protected function validateBuyCrypto(CryptoFormRequest $request, string $errorName = 'buyError'): void
     {
         $user = $this->userRepository->getById($request->getUserId());
         $coin = $this->cryptoRepository->getCoin($request->getCoinId());
         $total = $coin->getPrice() * $request->getAmount();
         if ($total > $user->getBalance()) {
-            $this->addError('buyError', 'you do not have enough money!');
+            $this->addError($errorName, 'you do not have enough money!');
         }
     }
 
-    protected function validateSellCrypto(BuyAndSellCryptoFormRequest $request): void
+    protected function validateSellCrypto(CryptoFormRequest $request, string $errorName = 'sellError'): void
     {
         $user = $this->userRepository->getById($request->getUserId());
         $userCoin = $this->userCryptoRepository->get($user->getId(), $request->getCoinId());
 
         if (!$userCoin || $request->getAmount() > $userCoin->getAmount()) {
-            $this->addError('sellError', 'invalid request!');
+            $this->addError($errorName, 'invalid request!');
         }
     }
 
@@ -154,8 +163,13 @@ class Rules
         }
     }
 
-    private function addError(string $name, string $message): void
+    protected function validateBuyBackCrypto(CryptoFormRequest $request): void
     {
-        $_SESSION['errors'][$name] = $message;
+        $user = $this->userRepository->getById($request->getUserId());
+        $openOrder = $this->shortSellRepository->getOpenOrder($user->getId(), $request->getCoinId());
+
+        if (!$openOrder || $request->getAmount() > $openOrder->getQuantity()) {
+            $this->addError('buyBack', 'invalid request!');
+        }
     }
 }

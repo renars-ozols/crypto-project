@@ -2,7 +2,7 @@
 
 namespace App\Validation;
 
-use App\FormRequests\BuyAndSellCryptoFormRequest;
+use App\FormRequests\CryptoFormRequest;
 use App\FormRequests\TransferCryptoFormRequest;
 use App\FormRequests\UserLoginFormRequest;
 use App\FormRequests\UserRegistrationFormRequest;
@@ -38,12 +38,12 @@ class Validation extends Rules
         $this->validateMoneyWithdrawal($amount, $userId);
     }
 
-    public function validateBuyCryptoForm(BuyAndSellCryptoFormRequest $request): void
+    public function validateBuyCryptoForm(CryptoFormRequest $request): void
     {
         $this->validateBuyCrypto($request);
     }
 
-    public function validateSellCryptoForm(BuyAndSellCryptoFormRequest $request): void
+    public function validateSellCryptoForm(CryptoFormRequest $request): void
     {
         $this->validateSellCrypto($request);
     }
@@ -53,5 +53,17 @@ class Validation extends Rules
         $this->validateValueGreaterThanZero($request->getAmount());
         $this->validateTransferCrypto($request);
         $this->validateCorrectPassword($request->getPassword(), $request->getUserId());
+    }
+
+    public function validateShortSellCryptoForm(CryptoFormRequest $request): void
+    {
+        $this->validateValueGreaterThanZero($request->getAmount());
+        $this->validateBuyCrypto($request, 'short');
+    }
+
+    public function validateBuyBackCryptoForm(CryptoFormRequest $request): void
+    {
+        $this->validateValueGreaterThanZero($request->getAmount());
+        $this->validateBuyBackCrypto($request);
     }
 }

@@ -39,7 +39,7 @@ class CryptoController
     public function search(): Redirect
     {
         $query = $_GET['query'];
-        $coinId = $this->searchCryptoService->execute($query);
+        $coinId = $this->searchCryptoService->execute(strtoupper($query));
         if ($coinId) {
             return new Redirect("/coin/$coinId");
         }

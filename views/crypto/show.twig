@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="card-body text-secondary d-flex flex-column justify-content-center align-items-center">
-                <div>
+                <div class="mt-4">
                     <p class="fw-bold fs-4">Price: ${{ coin.price|number_format(2) }}</p>
                 </div>
                 <div class="d-flex">
@@ -48,41 +48,138 @@
                         {{ coin.percentChange7d|number_format(2) }}%
                     </span>
                 </div>
-            </div>
-            <div class="card-footer d-flex justify-content-between my-3">
-                <div class="me-2 flex-grow-1">
-                    <form action="/coin/{{ coin.id }}/buy" method="post">
-                        <div class="text-center">
-                            <label for="buy" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="buy"
-                                   class="form-control {{ errors.buyError ? 'is-invalid' }}" aria-describedby="buy">
-                        </div>
-                        <div class="d-grid mt-2">
-                            <button class="btn btn-success" type="submit">Buy</button>
-                        </div>
-                        {% if errors.buyError %}
-                            <div class="text-danger">
-                                {{ errors.buyError }}
-                            </div>
-                        {% endif %}
-                    </form>
+                <div class="w-100 mt-4" style="margin-bottom: -10px;">
+                    <ul class="nav nav-pills flex-column flex-sm-row text-center bg-light border-0" id="pills-tab"
+                        role="tablist">
+                        <li class="nav-item flex-sm-fill" role="presentation">
+                            <a class="nav-link border-0 text-uppercase font-weight-bold {{ input.buyback ? '' : 'active' }}"
+                               id="pills-home-tab"
+                               data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab"
+                               aria-controls="pills-home" aria-selected="true">Trade</a>
+                        </li>
+                        <li class="nav-item flex-sm-fill" role="presentation">
+                            <a class="nav-link border-0 text-uppercase font-weight-bold {{ input.buyback ? 'active' }}"
+                               id="pills-profile-tab"
+                               data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab"
+                               aria-controls="pills-profile" aria-selected="false">Short</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="ms-2 flex-grow-1">
-                    <form action="/coin/{{ coin.id }}/sell" method="post">
-                        <div class="text-center">
-                            <label for="sell" class="col-form-label">Amount</label>
-                            <input type="number" step="any" name="amount" id="sell"
-                                   class="form-control {{ errors.sellError ? 'is-invalid' }}" aria-describedby="buy">
+            </div>
+            <div class="card-footer tab-content" id="pills-tabContent">
+                <div class="tab-pane fade {{ input.buyback ? '' : 'show active' }}" id="pills-home" role="tabpanel"
+                     aria-labelledby="pills-home-tab"
+                     tabindex="0">
+                    <div class="d-flex">
+                        <div class="me-2 flex-grow-1">
+                            <form action="/coin/{{ coin.id }}/buy" method="post">
+                                <div class="text-center">
+                                    <label for="buy" class="col-form-label">Amount</label>
+                                    <input type="number" step="any" name="amount" id="buy"
+                                           class="form-control {{ errors.buyError ? 'is-invalid' }}"
+                                           aria-describedby="buy">
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button
+                                            class="btn btn-success"
+                                            type="submit"
+                                            {% if auth is empty %}
+                                                disabled
+                                            {% endif %}
+                                    >Buy
+                                    </button>
+                                </div>
+                                {% if errors.buyError %}
+                                    <div class="text-danger">
+                                        {{ errors.buyError }}
+                                    </div>
+                                {% endif %}
+                            </form>
                         </div>
-                        <div class="d-grid mt-2">
-                            <button class="btn btn-danger" type="submit">Sell</button>
+                        <div class="ms-2 flex-grow-1">
+                            <form action="/coin/{{ coin.id }}/sell" method="post">
+                                <div class="text-center">
+                                    <label for="sell" class="col-form-label">Amount</label>
+                                    <input type="number" step="any" name="amount" id="sell"
+                                           class="form-control {{ errors.sellError ? 'is-invalid' }}"
+                                           aria-describedby="buy" value="{{ input.sell }}">
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button
+                                            class="btn btn-danger"
+                                            type="submit"
+                                            {% if auth is empty %}
+                                                disabled
+                                            {% endif %}
+                                    >Sell
+                                    </button>
+                                </div>
+                                {% if errors.sellError %}
+                                    <div class="text-danger">
+                                        {{ errors.sellError }}
+                                    </div>
+                                {% endif %}
+                            </form>
                         </div>
-                        {% if errors.sellError %}
-                            <div class="text-danger">
-                                {{ errors.sellError }}
-                            </div>
-                        {% endif %}
-                    </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade {{ input.buyback ? 'show active' }}" id="pills-profile" role="tabpanel"
+                     aria-labelledby="pills-profile-tab"
+                     tabindex="0">
+                    <div class="d-flex">
+                        <div class="me-2 flex-grow-1">
+                            <form action="/coin/{{ coin.id }}/buy-back" method="post">
+                                <div class="text-center">
+                                    <label for="buy" class="col-form-label">Amount</label>
+                                    <input type="number" step="any" name="amount" id="buy"
+                                           class="form-control {{ errors.amount or errors.buyBack ? 'is-invalid' }}"
+                                           aria-describedby="buy" value="{{ input.buyback }}">
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button
+                                            class="btn btn-success"
+                                            type="submit"
+                                            {% if auth is empty %}
+                                                disabled
+                                            {% endif %}
+                                    >Buy back
+                                    </button>
+                                </div>
+                                {% if errors.amount or errors.buyBack %}
+                                    <div class="text-danger">
+                                        {{ errors.amount }}
+                                        {{ errors.buyBack }}
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                        <div class="ms-2 flex-grow-1">
+                            <form action="/coin/{{ coin.id }}/short" method="post">
+                                <div class="text-center">
+                                    <label for="sell" class="col-form-label">Amount</label>
+                                    <input type="number" step="any" name="amount" id="sell"
+                                           class="form-control {{ errors.amount or errors.short ? 'is-invalid' }}"
+                                           aria-describedby="buy">
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button
+                                            class="btn btn-danger"
+                                            type="submit"
+                                            {% if auth is empty %}
+                                                disabled
+                                            {% endif %}
+                                    >Sell / Borrow
+                                    </button>
+                                </div>
+                                {% if errors.amount or errors.short %}
+                                    <div class="text-danger">
+                                        {{ errors.amount }}
+                                        {{ errors.short }}
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

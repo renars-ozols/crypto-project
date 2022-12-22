@@ -8,16 +8,29 @@ use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
 use App\Controllers\MoneyController;
 use App\Controllers\RegisterController;
+use App\Controllers\ShortSellingController;
 use App\Controllers\TransferCryptoController;
 use App\Controllers\UserDashboardController;
 use App\Redirect;
+use App\Repositories\Crypto\CoinMarketCapApiCryptoRepository;
+use App\Repositories\Crypto\CryptoRepository;
+use App\Repositories\ShortSell\MySQLShortSellRepository;
+use App\Repositories\ShortSell\ShortSellRepository;
+use App\Repositories\Transactions\MySqlTransactionsRepository;
+use App\Repositories\Transactions\TransactionsRepository;
+use App\Repositories\UserCrypto\MySqlUserCryptoRepository;
+use App\Repositories\UserCrypto\UserCryptoRepository;
+use App\Repositories\Users\MySqlUserRepository;
+use App\Repositories\Users\UserRepository;
 use App\Template;
 use App\ViewVariables\AuthViewVariables;
 use App\ViewVariables\ErrorsViewVariables;
+use App\ViewVariables\InputValueViewVariables;
 use App\ViewVariables\ViewVariables;
 use Dotenv\Dotenv;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use function DI\create;
 
 require_once '../vendor/autoload.php';
 
@@ -26,29 +39,33 @@ $dotenv->load();
 
 $loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
-//TODO: cleanup container
+
 $container = new DI\Container();
 $container->set(
-    \App\Repositories\Crypto\CryptoRepository::class,
-    \DI\create(\App\Repositories\Crypto\CoinMarketCapApiCryptoRepository::class)
+    CryptoRepository::class,
+    create(CoinMarketCapApiCryptoRepository::class)
 );
 $container->set(
-    \App\Repositories\Users\UserRepository::class,
-    \DI\create(\App\Repositories\Users\MySqlUserRepository::class)
+    UserRepository::class,
+    create(MySqlUserRepository::class)
 );
 $container->set(
-    \App\Repositories\UserCrypto\UserCryptoRepository::class,
-    \DI\create(\App\Repositories\UserCrypto\MySqlUserCryptoRepository::class)
+    UserCryptoRepository::class,
+    create(MySqlUserCryptoRepository::class)
 );
 $container->set(
-    \App\Repositories\Transactions\TransactionsRepository::class,
-    \DI\create(\App\Repositories\Transactions\MySqlTransactionsRepository::class)
+    TransactionsRepository::class,
+    create(MySqlTransactionsRepository::class)
+);
+$container->set(
+    ShortSellRepository::class,
+    create(MySQLShortSellRepository::class)
 );
 
-//TODO: Can implement auto read from directory
 $viewVariables = [
     AuthViewVariables::class,
-    ErrorsViewVariables::class
+    ErrorsViewVariables::class,
+    InputValueViewVariables::class
 ];
 
 foreach ($viewVariables as $variable) {
@@ -62,6 +79,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('GET', '/coin/{id:\d+}', [CryptoController::class, 'show']);
     $route->addRoute('POST', '/coin/{id:\d+}/buy', [BuySellCryptoController::class, 'buyCrypto']);
     $route->addRoute('POST', '/coin/{id:\d+}/sell', [BuySellCryptoController::class, 'sellCrypto']);
+    $route->addRoute('POST', '/coin/{id:\d+}/short', [ShortSellingController::class, 'shortCrypto']);
+    $route->addRoute('POST', '/coin/{id:\d+}/buy-back', [ShortSellingController::class, 'buyBackCrypto']);
     $route->addRoute('GET', '/coin/{id:\d+}/transfer', [TransferCryptoController::class, 'show']);
     $route->addRoute('POST', '/coin/{id:\d+}/transfer', [TransferCryptoController::class, 'transfer']);
     $route->addRoute('GET', '/search', [CryptoController::class, 'search']);
@@ -71,6 +90,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('POST', '/login', [LoginController::class, 'login']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
     $route->addRoute('GET', '/dashboard', [UserDashboardController::class, 'index']);
+    $route->addRoute('GET', '/dashboard/short-sell-orders', [UserDashboardController::class, 'showShortSellOrders']);
     $route->addRoute('POST', '/deposit', [MoneyController::class, 'deposit']);
     $route->addRoute('POST', '/withdraw', [MoneyController::class, 'withdraw']);
 });

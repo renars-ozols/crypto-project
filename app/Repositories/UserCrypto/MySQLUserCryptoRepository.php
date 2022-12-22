@@ -8,18 +8,6 @@ use App\Models\UserCrypto;
 
 class MySQLUserCryptoRepository implements UserCryptoRepository
 {
-    private function buildModel(array $row): UserCrypto
-    {
-        return new UserCrypto(
-            (int)$row['user_id'],
-            (int)$row['coin_id'],
-            $row['coin_name'],
-            $row['coin_logo'],
-            (float)$row['amount'],
-            (int)$row['id'],
-        );
-    }
-
     public function getAll(int $userId): ?UserCryptoCollection
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
@@ -38,6 +26,18 @@ class MySQLUserCryptoRepository implements UserCryptoRepository
             return $portfolio;
         }
         return null;
+    }
+
+    private function buildModel(array $row): UserCrypto
+    {
+        return new UserCrypto(
+            (int)$row['user_id'],
+            (int)$row['coin_id'],
+            $row['coin_name'],
+            $row['coin_logo'],
+            (float)$row['amount'],
+            (int)$row['id'],
+        );
     }
 
     public function get(int $userId, int $coinId): ?UserCrypto

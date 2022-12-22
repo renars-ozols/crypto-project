@@ -9,20 +9,6 @@ use App\Models\TransactionType;
 
 class MySQLTransactionsRepository implements TransactionsRepository
 {
-    private function buildModel(array $row): Transaction
-    {
-        return new Transaction(
-            (int)$row['user_id'],
-            (int)$row['coin_id'],
-            TransactionType::from($row['type']),
-            $row['coin_name'],
-            (float)$row['coin_price'],
-            (float)$row['amount'],
-            (int)$row['id'],
-            $row['created_at']
-        );
-    }
-
     public function getAll(int $userId): ?TransactionCollection
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
@@ -42,6 +28,20 @@ class MySQLTransactionsRepository implements TransactionsRepository
             return $transactions;
         }
         return null;
+    }
+
+    private function buildModel(array $row): Transaction
+    {
+        return new Transaction(
+            (int)$row['user_id'],
+            (int)$row['coin_id'],
+            TransactionType::from($row['type']),
+            $row['coin_name'],
+            (float)$row['coin_price'],
+            (float)$row['amount'],
+            (int)$row['id'],
+            $row['created_at']
+        );
     }
 
     public function create(Transaction $transaction): void

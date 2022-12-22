@@ -21,6 +21,27 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         ]);
     }
 
+    public function getCoins(int $limit): CryptoCollection
+    {
+        $coins = $this->fetch('v1/cryptocurrency/listings/latest', ['limit' => $limit]);
+
+        $queryIds = [];
+
+        foreach ($coins->data as $coin) {
+            $queryIds[] = $coin->id;
+        }
+
+        $logos = $this->fetch('v2/cryptocurrency/info', ['id' => implode(',', $queryIds)]);
+
+        $coinCollection = new CryptoCollection();
+
+        foreach ($coins->data as $coin) {
+            $coin->logo = $logos->data->{$coin->id}->logo;
+            $coinCollection->add($this->buildModel($coin));
+        }
+        return $coinCollection;
+    }
+
     private function fetch(string $url, array $query): stdClass
     {
         $response = $this->client->request('GET', $url, [
@@ -44,27 +65,6 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         );
     }
 
-    public function getCoins(int $limit): CryptoCollection
-    {
-        $coins = $this->fetch('v1/cryptocurrency/listings/latest', ['limit' => $limit]);
-
-        $queryIds = [];
-
-        foreach ($coins->data as $coin) {
-            $queryIds[] = $coin->id;
-        }
-
-        $logos = $this->fetch('v2/cryptocurrency/info', ['id' => implode(',', $queryIds)]);
-
-        $coinCollection = new CryptoCollection();
-
-        foreach ($coins->data as $coin) {
-            $coin->logo = $logos->data->{$coin->id}->logo;
-            $coinCollection->add($this->buildModel($coin));
-        }
-        return $coinCollection;
-    }
-
     public function getCoin(int $id): Crypto
     {
         $coin = $this->fetch('v2/cryptocurrency/quotes/latest', ['id' => $id]);
@@ -75,11 +75,14 @@ class CoinMarketCapApiCryptoRepository implements CryptoRepository
         return $this->buildModel($coin);
     }
 
-    public function searchCoin(string $query): ?int
+    public function getCoinBySymbol(string $symbol): Crypto
     {
-        $coin = $this->fetch('v1/cryptocurrency/map', ['symbol' => $query]);
+        $coin = $this->fetch('v2/cryptocurrency/quotes/latest', ['symbol' => $symbol]);
+        $logo = $this->fetch('v2/cryptocurrency/info', ['symbol' => $symbol]);
+        $coin = $coin->data->{$symbol}[0];
+        $coin->logo = $logo->data->{$symbol}[0]->logo;
 
-        return $coin->data[0]->id ?? null;
+        return $this->buildModel($coin);
     }
 
     public function getCurrentPrices(string $ids): stdClass

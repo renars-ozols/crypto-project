@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Authentication;
-use App\FormRequests\BuyAndSellCryptoFormRequest;
+use App\FormRequests\CryptoFormRequest;
 use App\Redirect;
 use App\Services\BuySellCrypto\BuyCryptoService;
 use App\Services\BuySellCrypto\BuySellCryptoServiceRequest;
@@ -16,18 +16,18 @@ class BuySellCryptoController
     private SellCryptoService $sellCryptoService;
     private Validation $validation;
 
-    public function __construct(BuyCryptoService $buyCryptoService,
+    public function __construct(BuyCryptoService  $buyCryptoService,
                                 SellCryptoService $sellCryptoService,
-                                Validation $validation)
+                                Validation        $validation)
     {
         $this->buyCryptoService = $buyCryptoService;
         $this->sellCryptoService = $sellCryptoService;
         $this->validation = $validation;
     }
 
-    public function buyCrypto( array $vars): Redirect
+    public function buyCrypto(array $vars): Redirect
     {
-        $this->validation->validateBuyCryptoForm(new BuyAndSellCryptoFormRequest(
+        $this->validation->validateBuyCryptoForm(new CryptoFormRequest(
             Authentication::getAuthId(),
             (int)$vars['id'],
             (float)$_POST['amount']
@@ -47,7 +47,7 @@ class BuySellCryptoController
 
     public function sellCrypto(array $vars): Redirect
     {
-        $this->validation->validateSellCryptoForm(new BuyAndSellCryptoFormRequest(
+        $this->validation->validateSellCryptoForm(new CryptoFormRequest(
             Authentication::getAuthId(),
             (int)$vars['id'],
             (float)$_POST['amount'],

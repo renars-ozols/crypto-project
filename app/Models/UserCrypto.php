@@ -68,9 +68,19 @@ class UserCrypto
         return $this->averagePrice;
     }
 
+    public function setAveragePrice(?float $averagePrice): void
+    {
+        $this->averagePrice = $averagePrice;
+    }
+
     public function getCurrentPrice(): float
     {
         return $this->currentPrice;
+    }
+
+    public function setCurrentPrice(?float $currentPrice): void
+    {
+        $this->currentPrice = $currentPrice;
     }
 
     public function addAmount(float $amount): void
@@ -81,15 +91,5 @@ class UserCrypto
     public function subtractAmount(float $amount): void
     {
         $this->amount -= $amount;
-    }
-
-    public function setCurrentPrice(?float $currentPrice): void
-    {
-        $this->currentPrice = $currentPrice;
-    }
-
-    public function setAveragePrice(?float $averagePrice): void
-    {
-        $this->averagePrice = $averagePrice;
     }
 }

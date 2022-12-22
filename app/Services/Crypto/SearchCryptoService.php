@@ -3,6 +3,7 @@
 namespace App\Services\Crypto;
 
 use App\Repositories\Crypto\CryptoRepository;
+use Exception;
 
 class SearchCryptoService
 {
@@ -16,8 +17,8 @@ class SearchCryptoService
     public function execute(string $query): ?int
     {
         try {
-            return $this->repository->searchCoin($query);
-        } catch (\Exception $e) {
+            return $this->repository->getCoinBySymbol($query)->getId();
+        } catch (Exception $e) {
             return null;
         }
     }

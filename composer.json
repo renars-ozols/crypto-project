@@ -13,6 +13,7 @@
     "guzzlehttp/guzzle": "^7.5",
     "ext-json": "*",
     "php-di/php-di": "^6.4",
-    "myclabs/php-enum": "^1.8"
+    "myclabs/php-enum": "^1.8",
+    "nesbot/carbon": "^2.64"
   }
 }

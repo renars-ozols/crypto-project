@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\FormRequests;
+namespace App\Services\ShortCrypto;
 
-class CryptoFormRequest
+class ShortAndBuyBackServiceRequest
 {
     private int $userId;
     private int $coinId;

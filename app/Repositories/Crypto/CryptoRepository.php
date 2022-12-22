@@ -12,7 +12,7 @@ interface CryptoRepository
 
     public function getCoin(int $id): Crypto;
 
-    public function searchCoin(string $query): ?int;
+    public function getCoinBySymbol(string $symbol): Crypto;
 
     public function getCurrentPrices(string $ids): stdClass;
 }
