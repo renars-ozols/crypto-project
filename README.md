@@ -31,11 +31,10 @@ Website is designed using bootstrap 5 css.
 </ol>
 
 ### Home page, register and login page:
-![]registration_login.gif
+![registration_login](https://user-images.githubusercontent.com/43919610/209668550-3905c201-4653-41a9-92fa-5629fdc26546.gif)
 
 ### Buy, sell and short sell crypto:
-![]buying_selling.gif
+![buying_selling](https://user-images.githubusercontent.com/43919610/209668578-bf0003d3-c3a3-4b3b-93b8-773b6b079015.gif)
 
 ### Transfer crypto to another user:
-![]transfer.gif
-
+![transfer](https://user-images.githubusercontent.com/43919610/209668600-0a551516-419c-4442-a628-353b5288d371.gif)
