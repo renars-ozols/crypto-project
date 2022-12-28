@@ -30,7 +30,10 @@ Website is designed using bootstrap 5 css.
 <li>Navigate to public folder and run the server:<br><code>php -S localhost:8000</code></li>
 </ol>
 
-### Home page, register and login page:
+### Homepage
+<img width="1344" alt="Screenshot 2022-12-28 at 18 10 21" src="https://user-images.githubusercontent.com/43919610/209840772-44d127d4-fca5-4ded-b54d-8ac68fb9386c.png">
+
+### Register and login page:
 ![registration_login](https://user-images.githubusercontent.com/43919610/209668550-3905c201-4653-41a9-92fa-5629fdc26546.gif)
 
 ### Buy, sell and short sell crypto:
